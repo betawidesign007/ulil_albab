@@ -14,6 +14,6 @@ class Santri extends Model
         'tanggal_lahir',
         'kamar',
         'kelas',
-        'alamat'
+        'alamat',
     ];
 }

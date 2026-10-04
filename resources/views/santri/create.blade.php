@@ -11,7 +11,7 @@
                             <h4 class="fw-bold mb-1 text-white">
                                 <i class="bi bi-person-plus-fill me-2"></i> Tambah Data Santri Baru
                             </h4>
-                            <small class="text-white-50">Isi formulir pendaftaran santri Pondok Pesantren Ulil Albab</small>
+                            <small class="text-white-50">Isi formulir pendaftaran santri Pondok Pesantren Li Ulil Albab</small>
                         </div>
                         <a href="{{ route('santri.index') }}" class="btn btn-outline-light btn-sm">
                             &larr; Batal

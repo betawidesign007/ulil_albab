@@ -33,24 +33,32 @@
                             </p>
 
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ route('santri.index') }}"
+                                <a href="{{ route('jadwal.index') }}"
                                     class="btn btn-warning text-dark fw-bold btn-sm px-3 py-2">
-                                    <i class="bi bi-people-fill me-1"></i> Lihat Data Santri ({{ $totalSantri }})
+                                    <i class="bi bi-journal-bookmark-fill me-1"></i> Jadwal &amp; Acuan Kerja
+                                </a>
+
+                                <a href="{{ route('santri.index') }}"
+                                    class="btn btn-outline-light btn-sm px-3 py-2">
+                                    <i class="bi bi-people-fill me-1"></i> Data Santri ({{ $totalSantri }})
                                 </a>
 
                                 @if ($user->isAdmin())
+                                    <a href="{{ route('admin.ppdb.index') }}" class="btn btn-outline-light btn-sm px-3 py-2">
+                                        <i class="bi bi-sliders2 me-1"></i> Pengaturan PPDB &amp; Web
+                                    </a>
                                     <a href="{{ route('santri.create') }}" class="btn btn-outline-light btn-sm px-3 py-2">
-                                        <i class="bi bi-person-plus-fill me-1"></i> + Tambah Santri Baru
+                                        <i class="bi bi-person-plus-fill me-1"></i> + Tambah Santri
                                     </a>
                                     <a href="{{ route('users.index') }}" class="btn btn-outline-light btn-sm px-3 py-2">
-                                        <i class="bi bi-people me-1"></i> Kelola Akun Pengguna
+                                        <i class="bi bi-people me-1"></i> Pengguna
                                     </a>
                                 @endif
 
                                 @if ($user->isPemilik() || $user->isAdmin())
                                     <a href="{{ route('laporan.santri') }}"
                                         class="btn btn-light text-dark btn-sm px-3 py-2">
-                                        <i class="bi bi-printer-fill me-1"></i> Cetak Rekap Laporan Santri
+                                        <i class="bi bi-printer-fill me-1"></i> Cetak Rekap Laporan
                                     </a>
                                 @endif
                             </div>

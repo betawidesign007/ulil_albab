@@ -29,12 +29,12 @@
                     </span>
                     <div>
                         <h6 class="text-uppercase tracking-wider text-muted mb-0 small">Yayasan Pendidikan Islam</h6>
-                        <h2 class="fw-bold mb-0 text-success">PONDOK PESANTREN MODERN ULIL ALBAB</h2>
+                        <h2 class="fw-bold mb-0 text-success">PONDOK PESANTREN MODERN LI ULIL ALBAB</h2>
                         <small class="text-muted">SK Kemenag RI No: 452/PP.00.7/2018 &bull; Terakreditasi A (Unggul)</small>
                     </div>
                 </div>
                 <p class="text-muted small mb-0">
-                    Alamat: Kompleks Pesantren Ulil Albab Center, Jl. Raya Pesantren No. 99 | Telp: (031) 8765-4321 | Web: www.ulilalbab.ac.id
+                    Alamat: Kompleks Pesantren Li Ulil Albab Center, Jl. Raya Pesantren No. 99 | Telp: (031) 8765-4321 | Web: www.ulilalbab.ac.id
                 </p>
                 <div class="border-top border-dark border-2 mt-3 pt-1"></div>
             </div>

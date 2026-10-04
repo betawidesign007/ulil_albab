@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function getRoleBadgeClassAttribute(): string
     {
-        return match($this->role) {
+        return match ($this->role) {
             'admin' => 'bg-danger',
             'pengajar' => 'bg-primary',
             'pemilik' => 'bg-warning text-dark',
@@ -60,7 +60,7 @@ class User extends Authenticatable
 
     public function getRoleLabelAttribute(): string
     {
-        return match($this->role) {
+        return match ($this->role) {
             'admin' => 'Administrator',
             'pengajar' => 'Dewan Pengajar / Asatidz',
             'pemilik' => 'Pemilik / Mudir Yayasan',

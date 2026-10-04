@@ -21,8 +21,8 @@ class SantriController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('nama_lengkap', 'like', "%{$search}%")
-                  ->orWhere('nis', 'like', "%{$search}%")
-                  ->orWhere('tempat_lahir', 'like', "%{$search}%");
+                    ->orWhere('nis', 'like', "%{$search}%")
+                    ->orWhere('tempat_lahir', 'like', "%{$search}%");
             });
         }
 
@@ -53,6 +53,7 @@ class SantriController extends Controller
     public function create()
     {
         $this->authorizeAdmin();
+
         return view('santri.create');
     }
 
@@ -96,6 +97,7 @@ class SantriController extends Controller
     public function edit(Santri $santri)
     {
         $this->authorizeAdmin();
+
         return view('santri.edit', compact('santri'));
     }
 
@@ -108,7 +110,7 @@ class SantriController extends Controller
         $this->authorizeAdmin();
 
         $validated = $request->validate([
-            'nis' => 'required|unique:santris,nis,' . $santri->id,
+            'nis' => 'required|unique:santris,nis,'.$santri->id,
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'tempat_lahir' => 'required|string|max:255',
@@ -132,6 +134,7 @@ class SantriController extends Controller
         $this->authorizeAdmin();
 
         $santri->delete();
+
         return redirect()->route('santri.index')->with('success', 'Data santri berhasil dihapus!');
     }
 
@@ -140,7 +143,7 @@ class SantriController extends Controller
      */
     private function authorizeAdmin(): void
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
+        if (! Auth::check() || ! Auth::user()->isAdmin()) {
             abort(403, 'Akses Ditolak: Hanya Administrator yang berwenang menambah, mengubah, atau menghapus data santri.');
         }
     }

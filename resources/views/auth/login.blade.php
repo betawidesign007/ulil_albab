@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk Sistem SIMPONPES - Pondok Pesantren Ulil Albab</title>
+    <title>Masuk Sistem SIMPONPES - Pondok Pesantren Li Ulil Albab</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,14 +86,19 @@
                     </a>
 
                     <div class="d-flex align-items-center gap-2 mb-3">
-                        <span
-                            class="d-inline-flex align-items-center justify-content-center bg-white text-success rounded-circle shadow-sm"
-                            style="width: 44px; height: 44px;">
-                            <i class="bi bi-book-half fs-4 text-success"></i>
-                        </span>
+                        @php
+                            $loginLogo = $appSetting?->logo_url ?? (file_exists(public_path('images/logo.png')) ? asset('images/logo.png') : null);
+                        @endphp
+                        @if($loginLogo)
+                            <img src="{{ $loginLogo }}" alt="Logo SIMPONPES" class="rounded-circle shadow-sm bg-white p-1" style="width: 44px; height: 44px; object-fit: contain;">
+                        @else
+                            <span class="d-inline-flex align-items-center justify-content-center bg-white text-success rounded-circle shadow-sm" style="width: 44px; height: 44px;">
+                                <i class="bi bi-book-half fs-4 text-success"></i>
+                            </span>
+                        @endif
                         <div>
                             <h4 class="fw-bold mb-0">SIMPONPES</h4>
-                            <small class="text-warning">PP.Li Ulil Albab</small>
+                            <small class="text-warning">{{ $appSetting?->nama_pesantren ?? 'PP. Li Ulil Albab' }}</small>
                         </div>
                     </div>
 
@@ -115,7 +120,7 @@
                 </div>
 
                 <div class="text-white-50 small">
-                    &copy; {{ date('Y') }} Pondok Pesantren Ulil Albab.
+                    &copy; {{ date('Y') }} Pondok Pesantren Li Ulil Albab.
                 </div>
             </div>
 
@@ -142,61 +147,13 @@
                     </div>
                 @endif
 
-                <!-- 1-Click Role Login Shortcuts (Demo Feature) -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.05em;">
-                        <i class="bi bi-lightning-charge-fill text-warning"></i> Akses Cepat Berdasarkan Peran (1-Klik)
-                    </label>
-
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Admin -->
-                        <a href="{{ route('login', 'admin') }}"
-                            class="quick-role-btn bg-danger bg-opacity-10 border-danger-subtle text-dark">
-                            <span class="p-2 rounded-2 bg-danger text-white">
-                                <i class="bi bi-shield-lock-fill"></i>
-                            </span>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold small text-danger">Masuk sebagai Administrator</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Full CRUD santri &amp; manajemen
-                                    user (admin@ulilalbab.ac.id)</div>
-                            </div>
-                            <i class="bi bi-chevron-right text-danger"></i>
-                        </a>
-
-                        <!-- Pengajar -->
-                        <a href="{{ route('login', 'pengajar') }}"
-                            class="quick-role-btn bg-primary bg-opacity-10 border-primary-subtle text-dark">
-                            <span class="p-2 rounded-2 bg-primary text-white">
-                                <i class="bi bi-mortarboard-fill"></i>
-                            </span>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold small text-primary">Masuk sebagai Dewan Pengajar / Asatidz</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Melihat data santri &amp; kelas
-                                    (pengajar@ulilalbab.ac.id)</div>
-                            </div>
-                            <i class="bi bi-chevron-right text-primary"></i>
-                        </a>
-
-                        <!-- Pemilik -->
-                        <a href="{{ route('login', 'pemilik') }}"
-                            class="quick-role-btn bg-warning bg-opacity-10 border-warning-subtle text-dark">
-                            <span class="p-2 rounded-2 bg-warning text-dark">
-                                <i class="bi bi-award-fill"></i>
-                            </span>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold small text-dark">Masuk sebagai Pemilik / Mudir Yayasan</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Dashboard eksekutif &amp; cetak
-                                    laporan (pemilik@ulilalbab.ac.id)</div>
-                            </div>
-                            <i class="bi bi-chevron-right text-dark"></i>
-                        </a>
+                <!-- Security Notice: Restricting Unauthorized Public Access -->
+                <div class="alert alert-info border-0 d-flex align-items-start gap-3 py-3 px-3 rounded-3 mb-4 shadow-sm" style="background-color: #f0fdf4; border-left: 4px solid #059669 !important;">
+                    <i class="bi bi-shield-lock-fill fs-3 text-success"></i>
+                    <div class="small text-muted">
+                        <strong class="text-dark d-block mb-1">Area Terbatas (SIMPONPES)</strong>
+                        Halaman ini dikhususkan bagi <strong>Dewan Asatidz, Pengurus, dan Administrator</strong> Pondok Pesantren Li Ulil Albab. Akses publik langsung dinonaktifkan demi keamanan data pesantren.
                     </div>
-                </div>
-
-                <div class="position-relative text-center my-3">
-                    <hr>
-                    <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">atau
-                        login manual</span>
                 </div>
 
                 <!-- Form Login Biasa -->
@@ -223,8 +180,14 @@
                             <span class="input-group-text bg-light border-end-0"><i
                                     class="bi bi-key text-muted"></i></span>
                             <input type="password" name="password" id="password" required
-                                class="form-control border-start-0" placeholder="••••••••">
+                                class="form-control border-start-0 border-end-0 @error('password') is-invalid @enderror" placeholder="••••••••">
+                            <button class="btn btn-light border border-start-0 text-muted" type="button" id="togglePassword" style="border-color: #dee2e6;" title="Tampilkan/Sembunyikan kata sandi" aria-label="Tampilkan atau sembunyikan kata sandi">
+                                <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                            </button>
                         </div>
+                        @error('password')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -246,6 +209,22 @@
 
     <!-- Bootstrap 5 JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+
+            if (togglePassword && passwordInput && togglePasswordIcon) {
+                togglePassword.addEventListener('click', function () {
+                    const isPassword = passwordInput.getAttribute('type') === 'password';
+                    passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                    togglePasswordIcon.classList.toggle('bi-eye', !isPassword);
+                    togglePasswordIcon.classList.toggle('bi-eye-slash', isPassword);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

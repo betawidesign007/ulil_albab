@@ -11,7 +11,7 @@
                     <i class="bi bi-people-fill text-success me-2"></i> Data Santri Pondok Pesantren
                 </h1>
                 <p class="text-muted mb-0">
-                    Pondok Pesantren Modern Ulil Albab &bull; Anda login sebagai 
+                    Pondok Pesantren Modern Li Ulil Albab &bull; Anda login sebagai 
                     <span class="badge {{ Auth::user()->role_badge_class }}">{{ Auth::user()->role_label }}</span>
                 </p>
             </div>

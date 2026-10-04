@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Santri;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
                     'tanggal_lahir' => '2010-04-12',
                     'kamar' => 'Al-Ghazali',
                     'kelas' => '1 Tsanawiyah',
-                    'alamat' => 'Jl. Ketintang Baru No. 12, Surabaya'
+                    'alamat' => 'Jl. Ketintang Baru No. 12, Surabaya',
                 ],
                 [
                     'nis' => '2026002',
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
                     'tanggal_lahir' => '2009-08-25',
                     'kamar' => 'Aisyah',
                     'kelas' => '2 Tsanawiyah',
-                    'alamat' => 'Jl. Ijen No. 45, Malang'
+                    'alamat' => 'Jl. Ijen No. 45, Malang',
                 ],
                 [
                     'nis' => '2026003',
@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
                     'tanggal_lahir' => '2008-01-18',
                     'kamar' => 'Ali bin Abi Thalib',
                     'kelas' => '1 Aliyah',
-                    'alamat' => 'Jl. Merdeka No. 8, Jombang'
+                    'alamat' => 'Jl. Merdeka No. 8, Jombang',
                 ],
                 [
                     'nis' => '2026004',
@@ -91,7 +91,7 @@ class DatabaseSeeder extends Seeder
                     'tanggal_lahir' => '2008-11-03',
                     'kamar' => 'Fatimah',
                     'kelas' => '2 Aliyah',
-                    'alamat' => 'Jl. Veteran No. 19, Gresik'
+                    'alamat' => 'Jl. Veteran No. 19, Gresik',
                 ],
                 [
                     'nis' => '2026005',
@@ -101,13 +101,19 @@ class DatabaseSeeder extends Seeder
                     'tanggal_lahir' => '2007-06-15',
                     'kamar' => 'Al-Ghazali',
                     'kelas' => '3 Aliyah',
-                    'alamat' => 'Jl. Pahlawan No. 77, Sidoarjo'
-                ]
+                    'alamat' => 'Jl. Pahlawan No. 77, Sidoarjo',
+                ],
             ];
 
             foreach ($sampleSantris as $santri) {
                 Santri::updateOrCreate(['nis' => $santri['nis']], $santri);
             }
         }
+
+        // 5. Seed Kegiatan dan Video
+        $this->call(KegiatanVideoSeeder::class);
+
+        // 6. Seed Pengaturan PPDB Landing Page & Jadwal Acuan Kerja Asatidz
+        $this->call(PpdbAndJadwalSeeder::class);
     }
 }
