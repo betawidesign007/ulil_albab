@@ -6,6 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk Sistem SIMPONPES - Pondok Pesantren Li Ulil Albab</title>
 
+    <!-- Favicon / Logo di Browser Tab -->
+    @php
+        $faviconUrl = $appSetting?->logo_url ?? (file_exists(public_path('storage/images/logo.png')) || file_exists(base_path('../public_html/storage/images/logo.png')) ? asset('storage/images/logo.png') : asset('images/logo.png'));
+    @endphp
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ $faviconUrl }}?v={{ time() }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ $faviconUrl }}?v={{ time() }}">
+    <link rel="shortcut icon" href="{{ $faviconUrl }}?v={{ time() }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+    <script>
+        (function() {
+            var iconUrl = "{{ $faviconUrl }}?t=" + new Date().getTime();
+            var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+            link.type = 'image/png';
+            link.rel = 'shortcut icon';
+            link.href = iconUrl;
+            document.getElementsByTagName('head')[0].appendChild(link);
+        })();
+    </script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,6 +46,7 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .login-card {
@@ -46,6 +66,7 @@
             padding: 0.75rem 1.25rem;
             border-radius: 10px;
             transition: all 0.2s ease;
+            min-height: 44px;
         }
 
         .btn-pesantren:hover {
@@ -69,6 +90,36 @@
             transform: translateX(4px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
+
+        /* Mobile & Tablet Responsiveness */
+        @media (max-width: 767.98px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .login-card {
+                border-radius: 16px;
+            }
+
+            /* Prevent iOS auto-zoom */
+            input, .form-control {
+                font-size: 16px !important;
+            }
+
+            .left-info-panel {
+                padding: 1.5rem 1.25rem !important;
+            }
+
+            .right-form-panel {
+                padding: 1.5rem 1.25rem !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .login-card {
+                max-width: 700px;
+            }
+        }
     </style>
 </head>
 
@@ -77,24 +128,22 @@
     <div class="login-card">
         <div class="row g-0">
             <!-- Left Info Panel -->
-            <div class="col-lg-5 p-4 p-md-5 d-flex flex-column justify-content-between text-white"
+            <div class="col-lg-5 p-4 p-md-5 left-info-panel d-flex flex-column justify-content-between text-white"
                 style="background: linear-gradient(145deg, #044332 0%, #065f46 100%);">
                 <div>
                     <a href="{{ route('landing') }}"
-                        class="text-white-50 text-decoration-none small d-inline-flex align-items-center gap-1 mb-4">
+                        class="text-white-50 text-decoration-none small d-inline-flex align-items-center gap-1 mb-3 mb-md-4">
                         <i class="bi bi-arrow-left"></i> Kembali ke Website
                     </a>
 
-                    <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-2 mb-md-3">
                         @php
-                            $loginLogo = $appSetting?->logo_url ?? (file_exists(public_path('images/logo.png')) ? asset('images/logo.png') : null);
+                            $loginLogo = $appSetting?->logo_url ?? (file_exists(public_path('storage/images/logo.png')) || file_exists(base_path('../public_html/storage/images/logo.png')) ? asset('storage/images/logo.png') : asset('images/logo.png'));
                         @endphp
                         @if($loginLogo)
-                            <img src="{{ $loginLogo }}" alt="Logo SIMPONPES" class="rounded-circle shadow-sm bg-white p-1" style="width: 44px; height: 44px; object-fit: contain;">
+                            <img src="{{ $loginLogo }}" alt="Logo SIMPONPES" class="rounded-circle shadow-sm bg-white p-1" style="width: 44px; height: 44px; object-fit: contain;" onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src='{{ asset('storage/images/logo.png') }}'; }">
                         @else
-                            <span class="d-inline-flex align-items-center justify-content-center bg-white text-success rounded-circle shadow-sm" style="width: 44px; height: 44px;">
-                                <i class="bi bi-book-half fs-4 text-success"></i>
-                            </span>
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo SIMPONPES" class="rounded-circle shadow-sm bg-white p-1" style="width: 44px; height: 44px; object-fit: contain;" onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src='{{ asset('storage/images/logo.png') }}'; }">
                         @endif
                         <div>
                             <h4 class="fw-bold mb-0">SIMPONPES</h4>
@@ -102,13 +151,13 @@
                         </div>
                     </div>
 
-                    <h3 class="fw-bold mb-3 mt-4">Sistem Manajemen Pesantren Terpadu</h3>
-                    <p class="text-white-50 small mb-4">
+                    <h3 class="fw-bold mb-2 mb-md-3 mt-2 mt-md-4 fs-4 fs-md-3">Sistem Manajemen Pesantren Terpadu</h3>
+                    <p class="text-white-50 small mb-3 mb-md-4 d-none d-md-block">
                         Kelola data santri, pantau perkembangan pendidikan, dan dapatkan laporan statistik secara
                         real-time dengan hak akses terintegrasi.
                     </p>
 
-                    <div class="p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-10 small mb-4">
+                    <div class="p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-10 small mb-3 mb-md-4 d-none d-md-block">
                         <div class="fw-bold text-warning mb-2"><i class="bi bi-info-circle-fill me-1"></i> 3 Peran
                             Pengguna Aktif:</div>
                         <ul class="list-unstyled mb-0 d-flex flex-column gap-1 text-white-75">
@@ -119,13 +168,13 @@
                     </div>
                 </div>
 
-                <div class="text-white-50 small">
+                <div class="text-white-50 small d-none d-md-block">
                     &copy; {{ date('Y') }} Pondok Pesantren Li Ulil Albab.
                 </div>
             </div>
 
             <!-- Right Form Panel -->
-            <div class="col-lg-7 p-4 p-md-5 bg-white d-flex flex-column justify-content-center">
+            <div class="col-lg-7 p-4 p-md-5 right-form-panel bg-white d-flex flex-column justify-content-center">
                 <div class="mb-4">
                     <h3 class="fw-bold text-dark mb-1">Masuk ke Portal</h3>
                     <p class="text-muted small">Silakan pilih peran untuk <strong>Akses Cepat 1-Klik</strong> atau
@@ -194,9 +243,12 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="remember" id="remember">
                             <label class="form-check-label small text-muted" for="remember">
-                                Ingat saya di perangkat ini
+                                Ingat saya
                             </label>
                         </div>
+                        <a href="{{ route('password.request') }}" class="small text-success text-decoration-none fw-semibold">
+                            Lupa Kata Sandi?
+                        </a>
                     </div>
 
                     <button type="submit" class="btn btn-pesantren w-100 py-2">

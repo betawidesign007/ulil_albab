@@ -70,7 +70,11 @@ class Video extends Model
                 return asset('images/'.$this->thumbnail);
             }
 
-            return asset('storage/'.$this->thumbnail);
+            if (file_exists(public_path('storage/'.$this->thumbnail))) {
+                return asset('storage/'.$this->thumbnail);
+            }
+
+            return asset('images/'.$this->thumbnail);
         }
 
         if ($this->youtube_id) {

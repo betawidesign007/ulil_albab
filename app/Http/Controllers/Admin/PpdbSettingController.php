@@ -72,6 +72,13 @@ class PpdbSettingController extends Controller
             'sambutan_pengasuh_teks' => 'nullable|string',
             'sejarah_singkat' => 'nullable|string',
             'filosofi_nama' => 'nullable|string',
+            'pilar_keunggulan_judul' => 'nullable|string|max:255',
+            'pilar_keunggulan_deskripsi' => 'nullable|string|max:500',
+            'pilar' => 'nullable|array',
+            'pilar.*.judul' => 'nullable|string|max:255',
+            'pilar.*.deskripsi' => 'nullable|string',
+            'pilar.*.icon' => 'nullable|string|max:100',
+            'pilar.*.color' => 'nullable|string|max:50',
             'sarana_prasarana' => 'nullable|string',
             'visi_pesantren' => 'nullable|string',
             'misi_pesantren' => 'nullable|string',
@@ -226,6 +233,24 @@ class PpdbSettingController extends Controller
             $validated['struktur_organisasi'] = json_encode($strukturInput, JSON_UNESCAPED_UNICODE);
         }
 
+        // 6. Handle Pilar Keunggulan Santri
+        if ($request->has('pilar') && is_array($request->input('pilar'))) {
+            $pilarProcessed = [];
+            foreach ($request->input('pilar') as $pilarItem) {
+                $judul = trim($pilarItem['judul'] ?? '');
+                if ($judul === '') {
+                    continue;
+                }
+                $pilarProcessed[] = [
+                    'judul' => $judul,
+                    'deskripsi' => trim($pilarItem['deskripsi'] ?? ''),
+                    'icon' => ! empty(trim($pilarItem['icon'] ?? '')) ? trim($pilarItem['icon']) : 'bi-book-half',
+                    'color' => ! empty(trim($pilarItem['color'] ?? '')) ? trim($pilarItem['color']) : 'success',
+                ];
+            }
+            $validated['pilar_keunggulan'] = json_encode($pilarProcessed, JSON_UNESCAPED_UNICODE);
+        }
+
         // Bersihkan atribut sementara non-kolom sebelum mass-assignment
         $keysToUnset = [
             'logo_file', 'hapus_logo',
@@ -236,6 +261,7 @@ class PpdbSettingController extends Controller
             'foto_struktur_bph', 'hapus_foto_struktur_bph',
             'foto_struktur_divisi', 'hapus_foto_struktur_divisi',
             'struktur',
+            'pilar',
         ];
         foreach ($keysToUnset as $key) {
             unset($validated[$key]);
@@ -243,7 +269,7 @@ class PpdbSettingController extends Controller
 
         $setting->update($validated);
 
-        return redirect()->route('admin.ppdb.index')->with('success', 'Pengaturan Informasi PPDB, Profil, Visi Misi, Foto/Logo & Struktur Organisasi berhasil disimpan dan langsung tayang di website.');
+        return redirect()->route('admin.ppdb.index')->with('success', 'Pengaturan Informasi PPDB, Profil, Pilar Keunggulan, Visi Misi, Foto/Logo & Struktur Organisasi berhasil disimpan dan langsung tayang di website.');
     }
 
     /**

@@ -264,7 +264,7 @@
             </span>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 w-100" style="font-size: 0.82rem;">
+            <table class="table table-hover align-middle mb-0 w-100" style="font-size: 0.82rem; min-width: 880px;">
                 <thead class="table-light text-secondary" style="font-size: 0.76rem;">
                     <tr>
                         <th class="ps-2 py-2 text-center" style="width: 10%;">Hari &amp; Jam</th>

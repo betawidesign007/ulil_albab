@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Santri;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -71,10 +72,17 @@ class SantriController extends Controller
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'tempat_lahir' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
+            'usia' => 'nullable|integer|min:1|max:120',
+            'nama_orang_tua' => 'nullable|string|max:255',
+            'no_hp' => 'nullable|string|max:30',
             'kamar' => 'nullable|string|max:100',
             'kelas' => 'nullable|string|max:100',
             'alamat' => 'nullable|string',
         ]);
+
+        if (empty($validated['usia']) && ! empty($validated['tanggal_lahir'])) {
+            $validated['usia'] = Carbon::parse($validated['tanggal_lahir'])->age;
+        }
 
         Santri::create($validated);
 
@@ -87,6 +95,8 @@ class SantriController extends Controller
      */
     public function show(Santri $santri)
     {
+        $santri->load(['pembayarans.petugas']);
+
         return view('santri.show', compact('santri'));
     }
 
@@ -115,10 +125,17 @@ class SantriController extends Controller
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'tempat_lahir' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
+            'usia' => 'nullable|integer|min:1|max:120',
+            'nama_orang_tua' => 'nullable|string|max:255',
+            'no_hp' => 'nullable|string|max:30',
             'kamar' => 'nullable|string|max:100',
             'kelas' => 'nullable|string|max:100',
             'alamat' => 'nullable|string',
         ]);
+
+        if (empty($validated['usia']) && ! empty($validated['tanggal_lahir'])) {
+            $validated['usia'] = Carbon::parse($validated['tanggal_lahir'])->age;
+        }
 
         $santri->update($validated);
 

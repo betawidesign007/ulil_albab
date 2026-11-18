@@ -38,6 +38,9 @@ class PpdbSetting extends Model
         'sambutan_pengasuh_teks',
         'sejarah_singkat',
         'filosofi_nama',
+        'pilar_keunggulan_judul',
+        'pilar_keunggulan_deskripsi',
+        'pilar_keunggulan',
         'sarana_prasarana',
         'visi_pesantren',
         'misi_pesantren',
@@ -207,19 +210,74 @@ class PpdbSetting extends Model
     }
 
     /**
+     * Helper resolusi path gambar yang ramah deployment hosting (public maupun public_html, termasuk subfolder storage/images).
+     */
+    protected function resolveImageUrl(?string $filename, ?string $defaultPath = null): ?string
+    {
+        if (! $filename) {
+            return $defaultPath ? asset($defaultPath) : null;
+        }
+
+        // 1. Cek folder images/ langsung di public_path
+        if (file_exists(public_path('images/'.$filename))) {
+            return asset('images/'.$filename);
+        }
+
+        // 2. Cek jika berada di storage/images/ (seperti di cPanel public_html/storage/images/)
+        if (file_exists(public_path('storage/images/'.$filename))) {
+            return asset('storage/images/'.$filename);
+        }
+
+        // 3. Cek public_html di luar folder project (struktur umum cPanel)
+        if (file_exists(base_path('../public_html/images/'.$filename))) {
+            return asset('images/'.$filename);
+        }
+
+        if (file_exists(base_path('../public_html/storage/images/'.$filename))) {
+            return asset('storage/images/'.$filename);
+        }
+
+        if (file_exists(base_path('../../public_html/images/'.$filename))) {
+            return asset('images/'.$filename);
+        }
+
+        if (file_exists(base_path('../../public_html/storage/images/'.$filename))) {
+            return asset('storage/images/'.$filename);
+        }
+
+        // 4. Cek public_html di dalam folder project
+        if (file_exists(base_path('public_html/images/'.$filename))) {
+            return asset('images/'.$filename);
+        }
+
+        if (file_exists(base_path('public_html/storage/images/'.$filename))) {
+            return asset('storage/images/'.$filename);
+        }
+
+        // 5. Fallback ke gambar default jika diberikan
+        if ($defaultPath) {
+            return asset($defaultPath);
+        }
+
+        // 6. Kembalikan URL asset langsung agar web server melayani file secara statis
+        return asset('images/'.$filename);
+    }
+
+    /**
      * URL Logo Pesantren (kustom atau bawaan)
      */
     public function getLogoUrlAttribute(): ?string
     {
-        if ($this->logo && file_exists(public_path('images/'.$this->logo))) {
-            return asset('images/'.$this->logo);
+        if ($this->logo) {
+            return $this->resolveImageUrl($this->logo, 'images/logo.png');
         }
 
-        if (file_exists(public_path('images/logo.png'))) {
-            return asset('images/logo.png');
+        // Jika file logo.png ada di folder storage/images
+        if (file_exists(public_path('storage/images/logo.png')) || file_exists(base_path('../public_html/storage/images/logo.png')) || file_exists(base_path('../../public_html/storage/images/logo.png'))) {
+            return asset('storage/images/logo.png');
         }
 
-        return null;
+        return asset('images/logo.png');
     }
 
     /**
@@ -227,11 +285,11 @@ class PpdbSetting extends Model
      */
     public function getSambutanPengasuhFotoUrlAttribute(): ?string
     {
-        if ($this->sambutan_pengasuh_foto && file_exists(public_path('images/'.$this->sambutan_pengasuh_foto))) {
-            return asset('images/'.$this->sambutan_pengasuh_foto);
+        if (! $this->sambutan_pengasuh_foto) {
+            return null;
         }
 
-        return null;
+        return $this->resolveImageUrl($this->sambutan_pengasuh_foto);
     }
 
     /**
@@ -239,11 +297,11 @@ class PpdbSetting extends Model
      */
     public function getSejarahFotoUrlAttribute(): ?string
     {
-        if ($this->sejarah_foto && file_exists(public_path('images/'.$this->sejarah_foto))) {
-            return asset('images/'.$this->sejarah_foto);
+        if (! $this->sejarah_foto) {
+            return null;
         }
 
-        return null;
+        return $this->resolveImageUrl($this->sejarah_foto);
     }
 
     /**
@@ -251,11 +309,11 @@ class PpdbSetting extends Model
      */
     public function getVisiMisiFotoUrlAttribute(): ?string
     {
-        if ($this->visi_misi_foto && file_exists(public_path('images/'.$this->visi_misi_foto))) {
-            return asset('images/'.$this->visi_misi_foto);
+        if (! $this->visi_misi_foto) {
+            return null;
         }
 
-        return null;
+        return $this->resolveImageUrl($this->visi_misi_foto);
     }
 
     /**
@@ -289,6 +347,64 @@ class PpdbSetting extends Model
     public function getFilosofiNamaAttribute(): string
     {
         return $this->attributes['filosofi_nama'] ?? "Nama Li Ulil Albab diambil dari terminologi Qur'ani yang menggambarkan insan paripurna: generasi yang senantiasa menyeimbangkan antara dzikrullah (hubungan ruhani yang kokoh dengan Sang Pencipta) dan fikr (analisis ilmiah, kecerdasan nalar, serta kesadaran sosial yang tajam).";
+    }
+
+    /**
+     * Accessor: Judul Section Pilar Keunggulan
+     */
+    public function getPilarKeunggulanJudulAttribute(): string
+    {
+        return $this->attributes['pilar_keunggulan_judul'] ?? '4 Pilar Keunggulan Kurikulum Pesantren';
+    }
+
+    /**
+     * Accessor: Deskripsi / Subjudul Section Pilar Keunggulan
+     */
+    public function getPilarKeunggulanDeskripsiAttribute(): string
+    {
+        return $this->attributes['pilar_keunggulan_deskripsi'] ?? 'Ciri khas pendidikan terpadu yang membedakan santri Li Ulil Albab';
+    }
+
+    /**
+     * Accessor: Daftar Pilar Keunggulan
+     *
+     * @return array<int, array{judul: string, deskripsi: string, icon: string, color: string}>
+     */
+    public function getPilarKeunggulanListAttribute(): array
+    {
+        if (! empty($this->attributes['pilar_keunggulan'])) {
+            $decoded = json_decode($this->attributes['pilar_keunggulan'], true);
+            if (is_array($decoded) && count($decoded) > 0) {
+                return $decoded;
+            }
+        }
+
+        return [
+            [
+                'judul' => '1. Tahfidz 30 Juz Bersanad',
+                'deskripsi' => "Bimbingan talaqqi, metode mutqin, muraja'ah harian terpantau, dan ujian tasmi' bil-ghaib di hadapan masyayikh berijazah sanad.",
+                'icon' => 'bi-book-half',
+                'color' => 'success',
+            ],
+            [
+                'judul' => '2. Turats & Kitab Salaf',
+                'deskripsi' => "Kajian sistematis kitab kuning madzhab Syafi'i (Safinah, Taqrib, Jurumiyyah, Arbain Nawawi) untuk memperkokoh akidah dan fiqih harian.",
+                'icon' => 'bi-journal-bookmark-fill',
+                'color' => 'warning',
+            ],
+            [
+                'judul' => '3. Bilingual Arab & Inggris',
+                'deskripsi' => 'Penerapan lingkungan bahasa aktif 24 jam dengan muhadatsah pagi, public speaking, debat ilmiah, dan pembiasaan percakapan harian.',
+                'icon' => 'bi-translate',
+                'color' => 'primary',
+            ],
+            [
+                'judul' => '4. Sains & IT Terpadu',
+                'deskripsi' => 'Integrasi kurikulum Kemenag dengan riset sains, laboratorium komputer, sistem informasi digital SIMPONPES, dan jiwa kemandirian santri.',
+                'icon' => 'bi-laptop',
+                'color' => 'danger',
+            ],
+        ];
     }
 
     /**

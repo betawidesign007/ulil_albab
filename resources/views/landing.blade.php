@@ -8,6 +8,30 @@
     <meta name="description"
         content="Portal resmi informasi kegiatan santri, dokumentasi foto, galeri video, serta alur persyaratan dan formulir pendaftaran PPDB online Pondok Pesantren Li Ulil Albab.">
 
+    <!-- Favicon / Logo di Browser Tab -->
+    @php
+        $faviconUrl =
+            $ppdbSetting?->logo_url ??
+            (file_exists(public_path('storage/images/logo.png')) ||
+            file_exists(base_path('../public_html/storage/images/logo.png'))
+                ? asset('storage/images/logo.png')
+                : asset('images/logo.png'));
+    @endphp
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ $faviconUrl }}?v={{ time() }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ $faviconUrl }}?v={{ time() }}">
+    <link rel="shortcut icon" href="{{ $faviconUrl }}?v={{ time() }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+    <script>
+        (function() {
+            var iconUrl = "{{ $faviconUrl }}?t=" + new Date().getTime();
+            var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+            link.type = 'image/png';
+            link.rel = 'shortcut icon';
+            link.href = iconUrl;
+            document.getElementsByTagName('head')[0].appendChild(link);
+        })();
+    </script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,14 +103,51 @@
         .nav-link {
             font-weight: 500;
             color: #334155 !important;
-            padding: 0.35rem 0.6rem !important;
-            font-size: 0.82rem;
+            padding: 0.4rem 0.55rem !important;
+            font-size: 0.85rem;
             transition: color 0.2s ease;
         }
 
         .nav-link:hover,
         .nav-link.active {
             color: #065f46 !important;
+        }
+
+        @media (min-width: 992px) and (max-width: 1280px) {
+            .main-navbar .navbar-brand {
+                margin-right: 0.5rem !important;
+            }
+            .main-navbar .navbar-brand img {
+                width: 38px !important;
+                height: 38px !important;
+            }
+            .main-navbar .navbar-brand span {
+                font-size: 0.82rem !important;
+            }
+            .main-navbar .navbar-brand small {
+                font-size: 0.6rem !important;
+            }
+            .main-navbar .nav-link {
+                padding: 0.35rem 0.45rem !important;
+                font-size: 0.82rem !important;
+            }
+            .main-navbar .nav-link i {
+                margin-right: 0.15rem !important;
+            }
+            .main-navbar .btn-sm {
+                padding: 0.3rem 0.65rem !important;
+                font-size: 0.8rem !important;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1120px) {
+            .main-navbar .nav-link i {
+                display: none !important;
+            }
+            .main-navbar .nav-link {
+                padding: 0.35rem 0.35rem !important;
+                font-size: 0.8rem !important;
+            }
         }
 
         /* Hero Section */
@@ -494,7 +555,56 @@
 
         @media (max-width: 768px) {
             .hero-video-thumb {
-                height: 240px;
+                height: 220px;
+            }
+
+            .hero-play-btn {
+                width: 56px !important;
+                height: 56px !important;
+                font-size: 1.35rem !important;
+            }
+
+            /* Prevent iOS Safari auto-zoom on input focus */
+            input,
+            select,
+            textarea,
+            .form-control,
+            .form-select {
+                font-size: 16px !important;
+            }
+
+            /* Profil & Visi Misi Tab Nav scrollable horizontally on mobile */
+            .profil-tab-nav {
+                max-width: 100%;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding: 4px;
+                scrollbar-width: none;
+            }
+
+            .profil-tab-nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .profil-tab-btn {
+                padding: 0.45rem 0.95rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            .hero-section {
+                padding-top: 3.5rem;
+                padding-bottom: 3.5rem;
+            }
+
+            .activity-img-wrapper {
+                height: 180px;
+            }
+
+            .form-ppdb-card .p-4,
+            .form-ppdb-card .p-md-5 {
+                padding: 1.25rem !important;
             }
         }
 
@@ -828,17 +938,10 @@
         <div class="container-fluid px-3 px-lg-4">
             <!-- Brand -->
             <a class="navbar-brand d-flex align-items-center gap-2 me-2 text-nowrap" href="{{ route('landing') }}">
-                @if ($ppdbSetting->logo_url)
-                    <img src="{{ $ppdbSetting->logo_url }}" alt="Logo Pesantren"
-                        class="rounded-3 shadow-sm flex-shrink-0 bg-white p-1"
-                        style="width: 46px; height: 46px; object-fit: contain;">
-                @else
-                    <span
-                        class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-3 shadow-sm flex-shrink-0"
-                        style="width: 34px; height: 34px;">
-                        <i class="bi bi-book-half fs-5"></i>
-                    </span>
-                @endif
+                <img src="{{ $ppdbSetting->logo_url ?? asset('images/logo.png') }}" alt="Logo Pesantren"
+                    class="rounded-3 shadow-sm flex-shrink-0 bg-white p-1"
+                    style="width: 46px; height: 46px; object-fit: contain;"
+                    onerror="if (!this.dataset.step) { this.dataset.step = '1'; this.src='{{ asset('images/logo.png') }}'; } else if (this.dataset.step === '1') { this.dataset.step = '2'; this.src='{{ asset('storage/images/logo.png') }}'; } else { this.style.display='none'; }">
                 <div class="lh-1">
                     <span class="fw-bold text-dark tracking-tight d-block text-uppercase"
                         style="font-size: 0.92rem; letter-spacing: -0.01em;">{{ $ppdbSetting->nama_pesantren }}</span>
@@ -859,38 +962,42 @@
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#beranda">Beranda</a></li>
                     <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#profil"><i
-                                class="bi bi-bank text-success me-1"></i> Profil Lembaga</a></li>
-                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#video-slideshow"><i
-                                class="bi bi-play-circle-fill text-danger me-1"></i> Video Pilihan</a></li>
-                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#kegiatan">Dokumentasi</a></li>
-                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#video">Galeri</a></li>
-                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#alur-ujian">Alur Ujian</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#formulir-ppdb">Formulir
-                            PPDB</a></li>
-                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#kontak">Kontak</a></li>
+                                class="bi bi-bank text-success me-1"></i> Profil</a></li>
+                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#kegiatan"><i
+                                class="bi bi-camera-fill text-warning me-1"></i> Dokumentasi</a></li>
+                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#video"><i
+                                class="bi bi-collection-play-fill text-danger me-1"></i> Video Santri</a></li>
+                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#alur-ujian"><i
+                                class="bi bi-check2-circle text-info me-1"></i> Alur Ujian</a></li>
+                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#formulir-ppdb"><i
+                                class="bi bi-file-earmark-text-fill text-success me-1"></i> Formulir PPDB</a></li>
+                    <li class="nav-item"><a class="nav-link py-1 px-2 text-nowrap" href="#kontak"><i
+                                class="bi bi-geo-alt-fill text-danger me-1"></i> Kontak</a></li>
                 </ul>
 
-                <!-- Action Button: Tombol Login Pengguna & Pendaftaran PPDB -->
+                <!-- Action Button: Tombol Ujian Masuk & Login / Dashboard Pengguna -->
                 <div class="d-flex align-items-center gap-2 text-nowrap flex-shrink-0 mt-2 mt-lg-0">
+                    <a href="{{ route('ppdb.exam.index') }}"
+                        class="btn btn-outline-success btn-sm py-1.5 px-3 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-sm rounded-pill"
+                        style="font-size: 0.85rem;"
+                        title="Ujian Masuk Akademik Calon Santri (50 Butir Soal)">
+                        <i class="bi bi-laptop text-success"></i> Ujian Masuk
+                    </a>
                     @guest
                         <a href="{{ route('login') }}"
-                            class="btn btn-outline-success btn-sm py-1 px-3 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm"
-                            style="font-size: 0.78rem;" title="Akses Login Pengguna: Admin, Pengajar, Pendidik">
-                            <i class="bi bi-shield-lock-fill"></i> Login Pengguna
+                            class="btn btn-outline-secondary btn-sm py-1.5 px-3 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-sm rounded-pill"
+                            style="font-size: 0.85rem;"
+                            title="Akses Login Pengguna: Admin, Pengajar, Pendidik">
+                            <i class="bi bi-shield-lock-fill text-success"></i> Login
                         </a>
                     @else
-                        <a href="{{ route('login') }}"
-                            class="btn btn-outline-success btn-sm py-1 px-3 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm"
-                            style="font-size: 0.78rem;" title="Akses Pengguna (Admin, Pengajar, Pendidik)">
-                            <i class="bi bi-person-badge-fill"></i> Login Pengguna
+                        <a href="{{ route('dashboard') }}"
+                            class="btn btn-success btn-sm py-1.5 px-3 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-sm rounded-pill text-white"
+                            style="font-size: 0.85rem;"
+                            title="Buka Dashboard SIMPONPES">
+                            <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
                     @endguest
-                    <a href="#formulir-ppdb"
-                        class="btn btn-gold btn-sm py-1 px-3 d-inline-flex align-items-center gap-1 shadow-sm fw-semibold"
-                        style="font-size: 0.78rem; border-radius: 9999px;">
-                        <i class="bi bi-pencil-square"></i> Daftar PPDB
-                    </a>
                 </div>
             </div>
         </div>
@@ -907,7 +1014,7 @@
                     <span class="badge bg-danger px-3 py-2 fw-bold text-uppercase fs-6 shadow-sm">
                         <i class="bi bi-broadcast me-1"></i> TAYANGAN PILIHAN
                     </span>
-                    <h3 class="fw-bold mb-0 text-white fs-4">Slide Show 4 Video Unggulan Santri</h3>
+                    <h3 class="fw-bold mb-0 text-white fs-4">4 Video Unggulan Santri</h3>
                 </div>
                 <div class="text-white-50 small mt-2 mt-sm-0">
                     <i class="bi bi-info-circle text-warning me-1"></i> Video dikelola langsung dari halaman Admin
@@ -933,8 +1040,11 @@
                                 <div class="row g-0 align-items-center">
                                     <!-- Video Thumbnail & Play Button Column -->
                                     <div class="col-lg-7">
-                                        <div class="hero-video-thumb position-relative"
-                                            onclick="putarVideoModal('{{ $heroVideo->is_local_video ? $heroVideo->video_url : $heroVideo->youtube_id }}', '{{ addslashes($heroVideo->judul) }}', {{ $heroVideo->is_local_video ? 'true' : 'false' }})"
+                                        <div class="hero-video-thumb position-relative btn-putar-video"
+                                            style="cursor: pointer;"
+                                            data-source="{{ $heroVideo->is_local_video ? $heroVideo->video_url : $heroVideo->youtube_id }}"
+                                            data-title="{{ $heroVideo->judul }}"
+                                            data-is-local="{{ $heroVideo->is_local_video ? '1' : '0' }}"
                                             title="Klik untuk memutar video">
                                             <img src="{{ $heroVideo->thumbnail_url }}" alt="{{ $heroVideo->judul }}"
                                                 loading="lazy">
@@ -987,8 +1097,10 @@
                                         <div
                                             class="d-flex flex-wrap gap-2 pt-3 border-top border-white border-opacity-15">
                                             <button type="button"
-                                                class="btn btn-danger btn-lg px-4 fw-bold d-inline-flex align-items-center gap-2 shadow"
-                                                onclick="putarVideoModal('{{ $heroVideo->is_local_video ? $heroVideo->video_url : $heroVideo->youtube_id }}', '{{ addslashes($heroVideo->judul) }}', {{ $heroVideo->is_local_video ? 'true' : 'false' }})">
+                                                class="btn btn-danger btn-lg px-4 fw-bold d-inline-flex align-items-center gap-2 shadow btn-putar-video"
+                                                data-source="{{ $heroVideo->is_local_video ? $heroVideo->video_url : $heroVideo->youtube_id }}"
+                                                data-title="{{ $heroVideo->judul }}"
+                                                data-is-local="{{ $heroVideo->is_local_video ? '1' : '0' }}">
                                                 <i class="bi bi-play-circle-fill fs-5"></i> Putar Video Sekarang
                                             </button>
                                             <a href="#formulir-ppdb" class="btn btn-outline-light btn-lg px-4">
@@ -1204,19 +1316,26 @@
             <div class="text-center max-w-xl mx-auto mb-4">
                 <span class="section-tag"><i class="bi bi-bank me-1"></i> Profil Lembaga</span>
                 <h2 class="section-title mb-2">Profil, Visi Misi &amp; Struktur Organisasi</h2>
-                <p class="text-muted">Mengenal lebih dekat arah perjuangan tarbiyah, filosofi nama, nilai luhur, dan jajaran dewan asatidz pembina Pondok Pesantren Modern Li Ulil Albab dalam satu halaman terpadu.</p>
+                <p class="text-muted">Mengenal lebih dekat arah perjuangan tarbiyah, filosofi nama, nilai luhur, dan
+                    jajaran dewan asatidz pembina Pondok Pesantren Modern Li Ulil Albab dalam satu halaman terpadu.</p>
             </div>
 
             <!-- Tab Pills Selector (Bootstrap 5 Tab Navigation) -->
             <div class="d-flex justify-content-center mb-5">
                 <div class="profil-tab-nav" role="tablist">
-                    <button class="profil-tab-btn active" id="tab-profil-btn" data-bs-toggle="pill" data-bs-target="#tab-profil" type="button" role="tab" aria-controls="tab-profil" aria-selected="true">
+                    <button class="profil-tab-btn active" id="tab-profil-btn" data-bs-toggle="pill"
+                        data-bs-target="#tab-profil" type="button" role="tab" aria-controls="tab-profil"
+                        aria-selected="true">
                         <i class="bi bi-building"></i> Profil &amp; Sejarah
                     </button>
-                    <button class="profil-tab-btn" id="tab-visimisi-btn" data-bs-toggle="pill" data-bs-target="#tab-visimisi" type="button" role="tab" aria-controls="tab-visimisi" aria-selected="false">
+                    <button class="profil-tab-btn" id="tab-visimisi-btn" data-bs-toggle="pill"
+                        data-bs-target="#tab-visimisi" type="button" role="tab" aria-controls="tab-visimisi"
+                        aria-selected="false">
                         <i class="bi bi-compass"></i> Visi, Misi &amp; Nilai
                     </button>
-                    <button class="profil-tab-btn" id="tab-struktur-btn" data-bs-toggle="pill" data-bs-target="#tab-struktur" type="button" role="tab" aria-controls="tab-struktur" aria-selected="false">
+                    <button class="profil-tab-btn" id="tab-struktur-btn" data-bs-toggle="pill"
+                        data-bs-target="#tab-struktur" type="button" role="tab" aria-controls="tab-struktur"
+                        aria-selected="false">
                         <i class="bi bi-diagram-3-fill"></i> Struktur Kepengurusan
                     </button>
                 </div>
@@ -1228,39 +1347,52 @@
                 <!-- ========================================== -->
                 <!-- TAB 1: PROFIL & SEJARAH PESANTREN         -->
                 <!-- ========================================== -->
-                <div class="tab-pane fade show active" id="tab-profil" role="tabpanel" aria-labelledby="tab-profil-btn" tabindex="0">
+                <div class="tab-pane fade show active" id="tab-profil" role="tabpanel"
+                    aria-labelledby="tab-profil-btn" tabindex="0">
                     <!-- Sambutan Pengasuh Card -->
                     <div class="profil-hero-card p-4 p-lg-5 mb-5">
                         <div class="profil-hero-pattern"></div>
                         <div class="row align-items-center gy-4 position-relative">
                             <div class="col-lg-4 text-center">
-                                <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-20 d-inline-block shadow">
-                                    <div class="rounded-circle bg-warning text-dark mx-auto d-flex align-items-center justify-content-center shadow-lg mb-3 overflow-hidden position-relative" style="width: 120px; height: 120px; font-size: 3rem; border: 4px solid rgba(255,255,255,0.6);">
-                                        @if($ppdbSetting->sambutan_pengasuh_foto_url)
-                                            <img src="{{ $ppdbSetting->sambutan_pengasuh_foto_url }}" alt="{{ $ppdbSetting->sambutan_pengasuh_nama }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                <div
+                                    class="p-3 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-20 d-inline-block shadow">
+                                    <div class="rounded-circle bg-warning text-dark mx-auto d-flex align-items-center justify-content-center shadow-lg mb-3 overflow-hidden position-relative"
+                                        style="width: 120px; height: 120px; font-size: 3rem; border: 4px solid rgba(255,255,255,0.6);">
+                                        @if ($ppdbSetting->sambutan_pengasuh_foto_url)
+                                            <img src="{{ $ppdbSetting->sambutan_pengasuh_foto_url }}"
+                                                alt="{{ $ppdbSetting->sambutan_pengasuh_nama }}"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
                                         @else
                                             <i class="bi bi-person-badge-fill"></i>
                                         @endif
                                     </div>
-                                    <h5 class="fw-bold text-white mb-1">{{ $ppdbSetting->sambutan_pengasuh_nama }}</h5>
-                                    <span class="badge bg-warning text-dark fw-bold px-3 py-1 mb-2">{{ $ppdbSetting->sambutan_pengasuh_jabatan }}</span>
+                                    <h5 class="fw-bold text-white mb-1">{{ $ppdbSetting->sambutan_pengasuh_nama }}
+                                    </h5>
+                                    <span
+                                        class="badge bg-warning text-dark fw-bold px-3 py-1 mb-2">{{ $ppdbSetting->sambutan_pengasuh_jabatan }}</span>
                                     <div class="small text-white-50">Pengasuh Utama Lembaga Pesantren</div>
                                 </div>
                             </div>
                             <div class="col-lg-8">
-                                <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-3 py-1 fw-bold text-uppercase mb-3" style="font-size: 0.78rem;">
+                                <span
+                                    class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-3 py-1 fw-bold text-uppercase mb-3"
+                                    style="font-size: 0.78rem;">
                                     <i class="bi bi-quote me-1"></i> Kalimat Sambutan Pengasuh
                                 </span>
                                 <h3 class="fw-bold text-white mb-3" style="font-size: 1.85rem; line-height: 1.35;">
                                     "{{ $ppdbSetting->sambutan_pengasuh_quote }}"
                                 </h3>
-                                <p class="text-white-75 mb-3" style="line-height: 1.7; font-size: 0.98rem; white-space: pre-line;">
+                                <p class="text-white-75 mb-3"
+                                    style="line-height: 1.7; font-size: 0.98rem; white-space: pre-line;">
                                     {{ $ppdbSetting->sambutan_pengasuh_teks }}
                                 </p>
                                 <div class="d-flex flex-wrap align-items-center gap-3 pt-2 text-white-50 small">
-                                    <div><i class="bi bi-check2-circle text-warning me-1"></i> Berdiri Sejak Tahun 2012</div>
-                                    <div><i class="bi bi-check2-circle text-warning me-1"></i> Pesantren Terakreditasi Unggul (A)</div>
-                                    <div><i class="bi bi-check2-circle text-warning me-1"></i> Terdaftar di Kemenag RI</div>
+                                    <div><i class="bi bi-check2-circle text-warning me-1"></i> Berdiri Sejak Tahun 2000
+                                    </div>
+                                    <div><i class="bi bi-check2-circle text-warning me-1"></i> Pesantren Terakreditasi
+                                        Unggul (A)</div>
+                                    <div><i class="bi bi-check2-circle text-warning me-1"></i> Terdaftar di Kemenag RI
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1281,10 +1413,13 @@
                                 </div>
                                 <div class="p-3 bg-light rounded-3 border-start border-4 border-success mb-3">
                                     <div class="font-arabic fs-4 text-success text-end mb-2" dir="rtl">
-                                        إِنَّ فِي خَلْقِ السَّمَاوَاتِ وَالْأَرْضِ وَاخْتِلَافِ اللَّيْلِ وَالنَّهَارِ لَآيَاتٍ لِّأُولِي الْأَلْبَابِ
+                                        إِنَّ فِي خَلْقِ السَّمَاوَاتِ وَالْأَرْضِ وَاخْتِلَافِ اللَّيْلِ وَالنَّهَارِ
+                                        لَآيَاتٍ لِّأُولِي الْأَلْبَابِ
                                     </div>
                                     <small class="text-muted d-block fst-italic">
-                                        "Sesungguhnya dalam penciptaan langit dan bumi, dan silih bergantinya malam dan siang terdapat tanda-tanda bagi Ulil Albab (orang-orang yang berakal)." (QS. Ali 'Imran: 190)
+                                        "Sesungguhnya dalam penciptaan langit dan bumi, dan silih bergantinya malam dan
+                                        siang terdapat tanda-tanda bagi Ulil Albab (orang-orang yang berakal)." (QS. Ali
+                                        'Imran: 190)
                                     </small>
                                 </div>
                                 <div class="text-muted small mb-0" style="line-height: 1.7; white-space: pre-line;">
@@ -1304,18 +1439,24 @@
                                         <small class="text-muted">Perjalanan Dedikasi &amp; Perkembangan</small>
                                     </div>
                                 </div>
-                                @if($ppdbSetting->sejarah_foto_url)
+                                @if ($ppdbSetting->sejarah_foto_url)
                                     <div class="mb-3 rounded-3 overflow-hidden shadow-sm" style="max-height: 200px;">
-                                        <img src="{{ $ppdbSetting->sejarah_foto_url }}" alt="Gedung &amp; Sejarah Pesantren" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <img src="{{ $ppdbSetting->sejarah_foto_url }}"
+                                            alt="Gedung &amp; Sejarah Pesantren"
+                                            style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
                                 @endif
                                 <div class="text-muted small mb-3" style="line-height: 1.7; white-space: pre-line;">
                                     {!! nl2br(e($ppdbSetting->sejarah_singkat)) !!}
                                 </div>
                                 <div class="d-flex align-items-center gap-2 pt-2 border-top">
-                                    <span class="badge bg-success bg-opacity-10 text-success fw-bold">NSPP: 510035780099</span>
-                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">SK Kemenag RI</span>
-                                    <span class="badge bg-warning bg-opacity-10 text-warning-emphasis fw-bold">Akreditasi A</span>
+                                    <span class="badge bg-success bg-opacity-10 text-success fw-bold">NSPP:
+                                        510035780099</span>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">SK Kemenag
+                                        RI</span>
+                                    <span
+                                        class="badge bg-warning bg-opacity-10 text-warning-emphasis fw-bold">Akreditasi
+                                        A</span>
                                 </div>
                             </div>
                         </div>
@@ -1324,46 +1465,32 @@
                     <!-- 4 Pilar Keunggulan Pendidikan -->
                     <div class="mb-5">
                         <div class="text-center mb-4">
-                            <h4 class="fw-bold text-dark mb-1">4 Pilar Keunggulan Kurikulum Pesantren</h4>
-                            <p class="text-muted small">Ciri khas pendidikan terpadu yang membedakan santri Li Ulil Albab</p>
+                            <h4 class="fw-bold text-dark mb-1">{{ $ppdbSetting->pilar_keunggulan_judul }}</h4>
+                            <p class="text-muted small">{{ $ppdbSetting->pilar_keunggulan_deskripsi }}</p>
                         </div>
                         <div class="row g-4">
-                            <div class="col-md-6 col-lg-3">
-                                <div class="pilar-card">
-                                    <div class="pilar-icon-box bg-success bg-opacity-10 text-success">
-                                        <i class="bi bi-book-half"></i>
+                            @php
+                                $pilarList = $ppdbSetting->pilar_keunggulan_list;
+                                $pilarCount = count($pilarList);
+                                $colClass = match ($pilarCount) {
+                                    1 => 'col-12 col-md-8 mx-auto',
+                                    2 => 'col-md-6',
+                                    3 => 'col-md-4',
+                                    default => 'col-md-6 col-lg-3',
+                                };
+                            @endphp
+                            @foreach ($pilarList as $pilar)
+                                <div class="{{ $colClass }}">
+                                    <div class="pilar-card">
+                                        <div
+                                            class="pilar-icon-box bg-{{ $pilar['color'] ?? 'success' }} bg-opacity-10 text-{{ $pilar['color'] ?? 'success' }}">
+                                            <i class="bi {{ $pilar['icon'] ?? 'bi-book-half' }}"></i>
+                                        </div>
+                                        <h6 class="fw-bold text-dark mb-2">{{ $pilar['judul'] }}</h6>
+                                        <p class="text-muted small mb-0">{{ $pilar['deskripsi'] }}</p>
                                     </div>
-                                    <h6 class="fw-bold text-dark mb-2">1. Tahfidz 30 Juz Bersanad</h6>
-                                    <p class="text-muted small mb-0">Bimbingan talaqqi, metode mutqin, muraja'ah harian terpantau, dan ujian tasmi' bil-ghaib di hadapan masyayikh berijazah sanad.</p>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="pilar-card">
-                                    <div class="pilar-icon-box bg-warning bg-opacity-10 text-warning">
-                                        <i class="bi bi-journal-bookmark-fill"></i>
-                                    </div>
-                                    <h6 class="fw-bold text-dark mb-2">2. Turats &amp; Kitab Salaf</h6>
-                                    <p class="text-muted small mb-0">Kajian sistematis kitab kuning madzhab Syafi'i (Safinah, Taqrib, Jurumiyyah, Arbain Nawawi) untuk memperkokoh akidah dan fiqih harian.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="pilar-card">
-                                    <div class="pilar-icon-box bg-primary bg-opacity-10 text-primary">
-                                        <i class="bi bi-translate"></i>
-                                    </div>
-                                    <h6 class="fw-bold text-dark mb-2">3. Bilingual Arab &amp; Inggris</h6>
-                                    <p class="text-muted small mb-0">Penerapan lingkungan bahasa aktif 24 jam dengan muhadatsah pagi, public speaking, debat ilmiah, dan pembiasaan percakapan harian.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="pilar-card">
-                                    <div class="pilar-icon-box bg-danger bg-opacity-10 text-danger">
-                                        <i class="bi bi-laptop"></i>
-                                    </div>
-                                    <h6 class="fw-bold text-dark mb-2">4. Sains &amp; IT Terpadu</h6>
-                                    <p class="text-muted small mb-0">Integrasi kurikulum Kemenag dengan riset sains, laboratorium komputer, sistem informasi digital SIMPONPES, dan jiwa kemandirian santri.</p>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
 
@@ -1373,17 +1500,18 @@
                             <div class="col-lg-4">
                                 <span class="badge bg-success mb-2">INFRASTRUKTUR LENGKAP</span>
                                 <h4 class="fw-bold text-dark mb-2">Sarana &amp; Fasilitas Pembelajaran Asrama</h4>
-                                <p class="text-muted small mb-0">Pesantren menyediakan lingkungan belajar yang aman, kondusif, nyaman, dan higienis bagi seluruh santri mukim.</p>
+                                <p class="text-muted small mb-0">Pesantren menyediakan lingkungan belajar yang aman,
+                                    kondusif, nyaman, dan higienis bagi seluruh santri mukim.</p>
                             </div>
                             <div class="col-lg-8">
                                 <div class="row g-3">
-                                    @foreach($ppdbSetting->sarana_list as $sarana)
-                                    <div class="col-sm-6">
-                                        <div class="d-flex align-items-center gap-2 p-2 rounded-3 bg-light">
-                                            <i class="bi bi-check-circle-fill text-success"></i>
-                                            <span class="small fw-semibold text-dark">{{ $sarana }}</span>
+                                    @foreach ($ppdbSetting->sarana_list as $sarana)
+                                        <div class="col-sm-6">
+                                            <div class="d-flex align-items-center gap-2 p-2 rounded-3 bg-light">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                <span class="small fw-semibold text-dark">{{ $sarana }}</span>
+                                            </div>
                                         </div>
-                                    </div>
                                     @endforeach
                                 </div>
                             </div>
@@ -1394,17 +1522,21 @@
                 <!-- ========================================== -->
                 <!-- TAB 2: VISI, MISI & TUJUAN LEMBAGA        -->
                 <!-- ========================================== -->
-                <div class="tab-pane fade" id="tab-visimisi" role="tabpanel" aria-labelledby="tab-visimisi-btn" tabindex="0">
+                <div class="tab-pane fade" id="tab-visimisi" role="tabpanel" aria-labelledby="tab-visimisi-btn"
+                    tabindex="0">
                     <!-- Banner Visi Akbar -->
-                    <div class="vision-banner mb-5 position-relative overflow-hidden" @if($ppdbSetting->visi_misi_foto_url) style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(6, 95, 70, 0.88) 100%), url('{{ $ppdbSetting->visi_misi_foto_url }}') center/cover no-repeat;" @endif>
+                    <div class="vision-banner mb-5 position-relative overflow-hidden"
+                        @if ($ppdbSetting->visi_misi_foto_url) style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(6, 95, 70, 0.88) 100%), url('{{ $ppdbSetting->visi_misi_foto_url }}') center/cover no-repeat;" @endif>
                         <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="badge bg-warning text-dark fw-bold px-3 py-1">VISI PESANTREN 2026 - 2035</span>
+                            <span class="badge bg-warning text-dark fw-bold px-3 py-1">VISI PESANTREN 2026 -
+                                2035</span>
                             <span class="text-white-50 small">&bull; Arah Strategis Pendidikan</span>
                         </div>
                         <h3 class="fw-bold text-white mb-3" style="font-size: 1.85rem; line-height: 1.35;">
                             "{{ $ppdbSetting->visi_pesantren }}"
                         </h3>
-                        <div class="d-flex flex-wrap gap-4 pt-2 text-white-75 small border-top border-white border-opacity-15">
+                        <div
+                            class="d-flex flex-wrap gap-4 pt-2 text-white-75 small border-top border-white border-opacity-15">
                             <div><i class="bi bi-star-fill text-warning me-1"></i> Berakhlak Mulia</div>
                             <div><i class="bi bi-star-fill text-warning me-1"></i> Hafalan Mutqin Bersanad</div>
                             <div><i class="bi bi-star-fill text-warning me-1"></i> Menguasai Bahasa Asing</div>
@@ -1416,21 +1548,23 @@
                     <div class="mb-5">
                         <div class="text-center mb-4">
                             <h4 class="fw-bold text-dark mb-1">Misi Strategis Pesantren</h4>
-                            <p class="text-muted small">Langkah nyata mewujudkan generasi Ulil Albab yang siap memimpin peradaban</p>
+                            <p class="text-muted small">Langkah nyata mewujudkan generasi Ulil Albab yang siap memimpin
+                                peradaban</p>
                         </div>
                         <div class="row g-4">
-                            @foreach($ppdbSetting->misi_list as $index => $misi)
-                            <div class="{{ count($ppdbSetting->misi_list) <= 3 ? 'col-md-4' : ($index >= 3 ? 'col-md-6 col-lg-6' : 'col-md-6 col-lg-4') }}">
-                                <div class="mission-step-card h-100">
-                                    <div class="d-flex align-items-center gap-3 mb-3">
-                                        <div class="mission-badge-num">{{ $index + 1 }}</div>
-                                        <h6 class="fw-bold text-dark mb-0">{{ $misi['judul'] }}</h6>
+                            @foreach ($ppdbSetting->misi_list as $index => $misi)
+                                <div
+                                    class="{{ count($ppdbSetting->misi_list) <= 3 ? 'col-md-4' : ($index >= 3 ? 'col-md-6 col-lg-6' : 'col-md-6 col-lg-4') }}">
+                                    <div class="mission-step-card h-100">
+                                        <div class="d-flex align-items-center gap-3 mb-3">
+                                            <div class="mission-badge-num">{{ $index + 1 }}</div>
+                                            <h6 class="fw-bold text-dark mb-0">{{ $misi['judul'] }}</h6>
+                                        </div>
+                                        <p class="text-muted small mb-0" style="line-height: 1.65;">
+                                            {{ $misi['deskripsi'] }}
+                                        </p>
                                     </div>
-                                    <p class="text-muted small mb-0" style="line-height: 1.65;">
-                                        {{ $misi['deskripsi'] }}
-                                    </p>
                                 </div>
-                            </div>
                             @endforeach
                         </div>
                     </div>
@@ -1438,44 +1572,52 @@
                     <!-- Panca Jiwa Pesantren (5 Nilai Luhur) -->
                     <div class="p-4 p-md-5 rounded-4 bg-white border shadow-sm mb-5">
                         <div class="text-center mb-4">
-                            <span class="badge bg-success-subtle text-success px-3 py-1 fw-bold text-uppercase mb-2">KARAKTER SANTRI</span>
+                            <span
+                                class="badge bg-success-subtle text-success px-3 py-1 fw-bold text-uppercase mb-2">KARAKTER
+                                SANTRI</span>
                             <h4 class="fw-bold text-dark mb-1">Panca Jiwa Pondok Pesantren</h4>
-                            <p class="text-muted small">Lima nilai dasar yang senantiasa dihidupkan dalam jiwa seluruh santri dan asatidz</p>
+                            <p class="text-muted small">Lima nilai dasar yang senantiasa dihidupkan dalam jiwa seluruh
+                                santri dan asatidz</p>
                         </div>
                         <div class="row g-3">
                             <div class="col-md">
                                 <div class="panca-jiwa-card">
                                     <div class="fs-2 text-success mb-2"><i class="bi bi-heart-fill"></i></div>
                                     <h6 class="fw-bold text-dark mb-1">Keikhlasan</h6>
-                                    <p class="text-muted small mb-0">Semata-mata berbuat mencari ridho Allah SWT (lillahi ta'ala).</p>
+                                    <p class="text-muted small mb-0">Semata-mata berbuat mencari ridho Allah SWT
+                                        (lillahi ta'ala).</p>
                                 </div>
                             </div>
                             <div class="col-md">
                                 <div class="panca-jiwa-card">
                                     <div class="fs-2 text-warning mb-2"><i class="bi bi-flower1"></i></div>
                                     <h6 class="fw-bold text-dark mb-1">Kesederhanaan</h6>
-                                    <p class="text-muted small mb-0">Bersahaja dalam sikap, kaya dalam cita-cita dan budi luhur.</p>
+                                    <p class="text-muted small mb-0">Bersahaja dalam sikap, kaya dalam cita-cita dan
+                                        budi luhur.</p>
                                 </div>
                             </div>
                             <div class="col-md">
                                 <div class="panca-jiwa-card">
                                     <div class="fs-2 text-primary mb-2"><i class="bi bi-shield-shaded"></i></div>
                                     <h6 class="fw-bold text-dark mb-1">Kemandirian</h6>
-                                    <p class="text-muted small mb-0">Mampu mengatur diri, tidak manja, dan bertanggung jawab penuh.</p>
+                                    <p class="text-muted small mb-0">Mampu mengatur diri, tidak manja, dan bertanggung
+                                        jawab penuh.</p>
                                 </div>
                             </div>
                             <div class="col-md">
                                 <div class="panca-jiwa-card">
                                     <div class="fs-2 text-danger mb-2"><i class="bi bi-people-fill"></i></div>
                                     <h6 class="fw-bold text-dark mb-1">Ukhuwah</h6>
-                                    <p class="text-muted small mb-0">Menjaga persaudaraan sejati sesama santri dan umat Islam.</p>
+                                    <p class="text-muted small mb-0">Menjaga persaudaraan sejati sesama santri dan umat
+                                        Islam.</p>
                                 </div>
                             </div>
                             <div class="col-md">
                                 <div class="panca-jiwa-card">
                                     <div class="fs-2 text-info mb-2"><i class="bi bi-lightbulb-fill"></i></div>
                                     <h6 class="fw-bold text-dark mb-1">Bebas Berfikir</h6>
-                                    <p class="text-muted small mb-0">Berwawasan luas, objektif dalam ilmu, santun dalam perbedaan.</p>
+                                    <p class="text-muted small mb-0">Berwawasan luas, objektif dalam ilmu, santun dalam
+                                        perbedaan.</p>
                                 </div>
                             </div>
                         </div>
@@ -1484,26 +1626,32 @@
                     <!-- Motto Pesantren & Target Lulusan -->
                     <div class="row g-4 align-items-center">
                         <div class="col-lg-6">
-                            <div class="p-4 rounded-4 text-white text-center h-100 d-flex flex-column justify-content-center shadow-sm" style="background: linear-gradient(135deg, #065f46 0%, #047857 100%);">
-                                <div class="font-arabic fs-3 text-warning mb-2">« اَلْعِلْمُ بِلَا عَمَلٍ كَالشَّجَرِ بِلَا ثَمَرٍ »</div>
+                            <div class="p-4 rounded-4 text-white text-center h-100 d-flex flex-column justify-content-center shadow-sm"
+                                style="background: linear-gradient(135deg, #065f46 0%, #047857 100%);">
+                                <div class="font-arabic fs-3 text-warning mb-2">« اَلْعِلْمُ بِلَا عَمَلٍ كَالشَّجَرِ
+                                    بِلَا ثَمَرٍ »</div>
                                 <h5 class="fw-bold text-warning mb-2">Motto Pendidikan Santri</h5>
                                 <div class="display-6 fw-bold mb-3" style="font-size: 1.65rem;">
                                     "{{ $ppdbSetting->motto_pesantren }}"
                                 </div>
                                 <p class="text-white-75 small mb-0">
-                                    Santri Li Ulil Albab dituntut memadukan penguasaan teori ilmu dengan pengamalan ibadah yang istiqomah serta keteladanan budi pekerti luhur di masyarakat.
+                                    Santri Li Ulil Albab dituntut memadukan penguasaan teori ilmu dengan pengamalan
+                                    ibadah yang istiqomah serta keteladanan budi pekerti luhur di masyarakat.
                                 </p>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="p-4 rounded-4 bg-white border shadow-sm h-100">
-                                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-mortarboard-fill text-success me-2"></i>Standar Kompetensi Lulusan (SKL)</h5>
+                                <h5 class="fw-bold text-dark mb-3"><i
+                                        class="bi bi-mortarboard-fill text-success me-2"></i>Standar Kompetensi Lulusan
+                                    (SKL)</h5>
                                 <ul class="list-group list-group-flush small">
-                                    @foreach($ppdbSetting->standar_kelulusan_list as $skl)
-                                    <li class="list-group-item px-0 d-flex gap-2">
-                                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
-                                        <div><strong>{{ $skl['kategori'] }}:</strong> {{ $skl['deskripsi'] }}</div>
-                                    </li>
+                                    @foreach ($ppdbSetting->standar_kelulusan_list as $skl)
+                                        <li class="list-group-item px-0 d-flex gap-2">
+                                            <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                                            <div><strong>{{ $skl['kategori'] }}:</strong> {{ $skl['deskripsi'] }}
+                                            </div>
+                                        </li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -1514,28 +1662,37 @@
                 <!-- ========================================== -->
                 <!-- TAB 3: STRUKTUR KEPENGURUSAN & ASATIDZ    -->
                 <!-- ========================================== -->
-                <div class="tab-pane fade" id="tab-struktur" role="tabpanel" aria-labelledby="tab-struktur-btn" tabindex="0">
+                <div class="tab-pane fade" id="tab-struktur" role="tabpanel" aria-labelledby="tab-struktur-btn"
+                    tabindex="0">
                     <div class="text-center max-w-xl mx-auto mb-4">
-                        <span class="badge bg-success-subtle text-success px-3 py-1 fw-bold text-uppercase mb-2">BAGAN ORGANISASI</span>
+                        <span class="badge bg-success-subtle text-success px-3 py-1 fw-bold text-uppercase mb-2">BAGAN
+                            ORGANISASI</span>
                         <h4 class="fw-bold text-dark mb-1">Struktur Kepengurusan Pondok Pesantren</h4>
-                        <p class="text-muted small">Susunan pimpinan yayasan, dewan pengasuh, dan kepala divisi operasional Pondok Pesantren Modern Li Ulil Albab</p>
+                        <p class="text-muted small">Susunan pimpinan yayasan, dewan pengasuh, dan kepala divisi
+                            operasional Pondok Pesantren Modern Li Ulil Albab</p>
                     </div>
 
                     <!-- Level 1: Pengasuh / Puncak Hirarki -->
                     @php
                         $struktur = $ppdbSetting->struktur_organisasi_list;
-                        $puncak = $struktur['puncak'] ?? ['nama' => 'KH. Dr. Abdullah Syukri, M.Ag', 'jabatan' => 'Pengasuh & Mudir \'Aam Pesantren', 'deskripsi' => 'Penanggung jawab umum seluruh kebijakan arah tarbiyah, akidah, kelembagaan, dan kurikulum.'];
+                        $puncak = $struktur['puncak'] ?? [
+                            'nama' => 'KH. Dr. Abdullah Syukri, M.Ag',
+                            'jabatan' => 'Pengasuh & Mudir \'Aam Pesantren',
+                            'deskripsi' =>
+                                'Penanggung jawab umum seluruh kebijakan arah tarbiyah, akidah, kelembagaan, dan kurikulum.',
+                        ];
                         $bphList = $struktur['bph'] ?? [];
                         $divisiList = $struktur['divisi'] ?? [];
                     @endphp
                     <div class="row justify-content-center mb-2">
                         <div class="col-md-8 col-lg-5">
                             <div class="org-card leader-card text-center p-4">
-                                <span class="badge bg-warning text-dark fw-bold position-absolute top-0 end-0 m-3 px-3 py-1 shadow-sm">
+                                <span
+                                    class="badge bg-warning text-dark fw-bold position-absolute top-0 end-0 m-3 px-3 py-1 shadow-sm">
                                     <i class="bi bi-award-fill me-1"></i> PIMPINAN PUNCAK
                                 </span>
                                 <div class="org-avatar-wrapper overflow-hidden">
-                                    @if(!empty($puncak['foto_url']))
+                                    @if (!empty($puncak['foto_url']))
                                         <img src="{{ $puncak['foto_url'] }}" alt="{{ $puncak['nama'] }}">
                                     @else
                                         <i class="bi bi-person-fill"></i>
@@ -1566,29 +1723,28 @@
                                 'bg-info bg-opacity-10 text-info',
                                 'bg-warning bg-opacity-10 text-warning-emphasis',
                             ];
-                            $bphIcons = [
-                                'bi-mortarboard-fill',
-                                'bi-laptop-fill',
-                                'bi-cash-coin',
-                            ];
+                            $bphIcons = ['bi-mortarboard-fill', 'bi-laptop-fill', 'bi-cash-coin'];
                         @endphp
-                        @foreach($bphList as $idx => $bph)
-                        <div class="col-md-6 col-lg-4">
-                            <div class="org-card text-center h-100">
-                                <div class="org-avatar-wrapper overflow-hidden" style="background: {{ $bphGradients[$idx % count($bphGradients)] }};">
-                                    @if(!empty($bph['foto_url']))
-                                        <img src="{{ $bph['foto_url'] }}" alt="{{ $bph['nama'] }}">
-                                    @else
-                                        <i class="bi {{ $bphIcons[$idx % count($bphIcons)] }}"></i>
-                                    @endif
+                        @foreach ($bphList as $idx => $bph)
+                            <div class="col-md-6 col-lg-4">
+                                <div class="org-card text-center h-100">
+                                    <div class="org-avatar-wrapper overflow-hidden"
+                                        style="background: {{ $bphGradients[$idx % count($bphGradients)] }};">
+                                        @if (!empty($bph['foto_url']))
+                                            <img src="{{ $bph['foto_url'] }}" alt="{{ $bph['nama'] }}">
+                                        @else
+                                            <i class="bi {{ $bphIcons[$idx % count($bphIcons)] }}"></i>
+                                        @endif
+                                    </div>
+                                    <h6 class="fw-bold text-dark mb-1">{{ $bph['nama'] }}</h6>
+                                    <div
+                                        class="badge {{ $bphBadges[$idx % count($bphBadges)] }} fw-bold px-2 py-1 mb-2">
+                                        {{ $bph['jabatan'] }}</div>
+                                    <p class="text-muted small mb-0">
+                                        {{ $bph['deskripsi'] }}
+                                    </p>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-1">{{ $bph['nama'] }}</h6>
-                                <div class="badge {{ $bphBadges[$idx % count($bphBadges)] }} fw-bold px-2 py-1 mb-2">{{ $bph['jabatan'] }}</div>
-                                <p class="text-muted small mb-0">
-                                    {{ $bph['deskripsi'] }}
-                                </p>
                             </div>
-                        </div>
                         @endforeach
                     </div>
 
@@ -1610,30 +1766,28 @@
                                 'bg-info bg-opacity-10 text-info',
                                 'bg-danger bg-opacity-10 text-danger',
                             ];
-                            $divIcons = [
-                                'bi-book-half',
-                                'bi-mortarboard',
-                                'bi-shield-check',
-                                'bi-heart-pulse-fill',
-                            ];
+                            $divIcons = ['bi-book-half', 'bi-mortarboard', 'bi-shield-check', 'bi-heart-pulse-fill'];
                         @endphp
-                        @foreach($divisiList as $idx => $div)
-                        <div class="col-md-6 col-lg-3">
-                            <div class="org-card text-center h-100">
-                                <div class="org-avatar-wrapper overflow-hidden" style="width: 68px; height: 68px; font-size: 1.6rem; background: {{ $divGradients[$idx % count($divGradients)] }};">
-                                    @if(!empty($div['foto_url']))
-                                        <img src="{{ $div['foto_url'] }}" alt="{{ $div['nama'] }}">
-                                    @else
-                                        <i class="bi {{ $divIcons[$idx % count($divIcons)] }}"></i>
-                                    @endif
+                        @foreach ($divisiList as $idx => $div)
+                            <div class="col-md-6 col-lg-3">
+                                <div class="org-card text-center h-100">
+                                    <div class="org-avatar-wrapper overflow-hidden"
+                                        style="width: 68px; height: 68px; font-size: 1.6rem; background: {{ $divGradients[$idx % count($divGradients)] }};">
+                                        @if (!empty($div['foto_url']))
+                                            <img src="{{ $div['foto_url'] }}" alt="{{ $div['nama'] }}">
+                                        @else
+                                            <i class="bi {{ $divIcons[$idx % count($divIcons)] }}"></i>
+                                        @endif
+                                    </div>
+                                    <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">
+                                        {{ $div['nama'] }}</h6>
+                                    <span
+                                        class="badge {{ $divBadges[$idx % count($divBadges)] }} fw-bold small mb-2">{{ $div['jabatan'] }}</span>
+                                    <p class="text-muted small mb-0" style="font-size: 0.8rem;">
+                                        {{ $div['deskripsi'] }}
+                                    </p>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">{{ $div['nama'] }}</h6>
-                                <span class="badge {{ $divBadges[$idx % count($divBadges)] }} fw-bold small mb-2">{{ $div['jabatan'] }}</span>
-                                <p class="text-muted small mb-0" style="font-size: 0.8rem;">
-                                    {{ $div['deskripsi'] }}
-                                </p>
                             </div>
-                        </div>
                         @endforeach
                     </div>
 
@@ -1645,8 +1799,10 @@
                                     <i class="bi bi-people-fill"></i>
                                 </span>
                                 <div>
-                                    <h5 class="fw-bold text-dark mb-1">Didukung {{ $totalAsatidz }}+ Dewan Asatidz &amp; Mursyid Berdedikasi</h5>
-                                    <p class="text-muted small mb-0">Lulusan universitas ternama dalam dan luar negeri (Al-Azhar Kairo, Yaman, Madinah, UIN, dan PTN Favorit).</p>
+                                    <h5 class="fw-bold text-dark mb-1">Didukung {{ $totalAsatidz }}+ Dewan Asatidz
+                                        &amp; Mursyid Berdedikasi</h5>
+                                    <p class="text-muted small mb-0">Lulusan universitas ternama dalam dan luar negeri
+                                        (Al-Azhar Kairo, Yaman, Madinah, UIN, dan PTN Favorit).</p>
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
@@ -1696,8 +1852,17 @@
                 @forelse($kegiatans as $kegiatan)
                     <div class="col-md-6 col-lg-4 kegiatan-item" data-category="{{ $kegiatan->kategori }}">
                         <div class="activity-card">
-                            <div class="activity-img-wrapper">
-                                <img src="{{ $kegiatan->gambar_url }}" alt="{{ $kegiatan->judul }}" loading="lazy">
+                            <div class="activity-img-wrapper btn-detail-kegiatan" style="cursor: pointer;"
+                                data-judul="{{ $kegiatan->judul }}"
+                                data-tanggal="{{ $kegiatan->tanggal->translatedFormat('d F Y') }}"
+                                data-lokasi="{{ $kegiatan->lokasi }}"
+                                data-kategori="{{ $kegiatan->kategori_label }}"
+                                data-gambar="{{ $kegiatan->gambar_url }}"
+                                data-deskripsi="{{ $kegiatan->deskripsi }}"
+                                title="Klik untuk melihat detail dokumentasi">
+                                <img src="{{ $kegiatan->gambar_url }}" alt="{{ $kegiatan->judul }}"
+                                    loading="lazy"
+                                    onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80';">
                                 <span class="activity-category-badge">
                                     <i class="bi bi-tag-fill me-1"></i> {{ $kegiatan->kategori_label }}
                                 </span>
@@ -1714,8 +1879,14 @@
                                 <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
                                     <span class="small text-muted"><i class="bi bi-geo-alt me-1 text-danger"></i>
                                         {{ $kegiatan->lokasi }}</span>
-                                    <button type="button" class="btn btn-sm btn-outline-success fw-bold"
-                                        onclick="lihatDetailKegiatan('{{ addslashes($kegiatan->judul) }}', '{{ $kegiatan->tanggal->translatedFormat('d F Y') }}', '{{ addslashes($kegiatan->lokasi) }}', '{{ $kegiatan->kategori_label }}', '{{ $kegiatan->gambar_url }}', '{{ addslashes(str_replace(["\r", "\n"], ' ', $kegiatan->deskripsi)) }}')">
+                                    <button type="button"
+                                        class="btn btn-sm btn-outline-success fw-bold btn-detail-kegiatan"
+                                        data-judul="{{ $kegiatan->judul }}"
+                                        data-tanggal="{{ $kegiatan->tanggal->translatedFormat('d F Y') }}"
+                                        data-lokasi="{{ $kegiatan->lokasi }}"
+                                        data-kategori="{{ $kegiatan->kategori_label }}"
+                                        data-gambar="{{ $kegiatan->gambar_url }}"
+                                        data-deskripsi="{{ $kegiatan->deskripsi }}">
                                         Detail <i class="bi bi-arrow-right"></i>
                                     </button>
                                 </div>
@@ -1802,8 +1973,10 @@
             <div class="row g-4">
                 @forelse($galeriVideos as $video)
                     <div class="col-md-6 col-lg-4">
-                        <div class="video-card"
-                            onclick="putarVideoModal('{{ $video->is_local_video ? $video->video_url : $video->youtube_id }}', '{{ addslashes($video->judul) }}', {{ $video->is_local_video ? 'true' : 'false' }})">
+                        <div class="video-card btn-putar-video" style="cursor: pointer;"
+                            data-source="{{ $video->is_local_video ? $video->video_url : $video->youtube_id }}"
+                            data-title="{{ $video->judul }}"
+                            data-is-local="{{ $video->is_local_video ? '1' : '0' }}">
                             <div class="video-thumb-container">
                                 <img src="{{ $video->thumbnail_url }}" alt="{{ $video->judul }}" loading="lazy">
                                 <div class="play-button-overlay">
@@ -1925,7 +2098,8 @@
                                 <span
                                     class="badge bg-success-subtle text-success px-3 py-2 fw-bold text-uppercase mb-2">Informasi
                                     Kuota &amp; Biaya</span>
-                                <div class="display-6 fw-bold text-success mb-1">{{ $ppdbSetting->biaya_pendaftaran }}
+                                <div class="display-6 fw-bold text-success mb-1">
+                                    {{ $ppdbSetting->biaya_pendaftaran }}
                                 </div>
                                 <div class="text-muted small mb-3">Biaya Formulir Pendaftaran PPDB Online</div>
 
@@ -1956,8 +2130,9 @@
                                                     : 0;
                                         @endphp
                                         <div class="progress-bar bg-success" role="progressbar"
-                                            style="width: {{ $percent }}%;" aria-valuenow="{{ $percent }}"
-                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                            style="width: {{ $percent }}%;"
+                                            aria-valuenow="{{ $percent }}" aria-valuemin="0"
+                                            aria-valuemax="100"></div>
                                     </div>
                                 </div>
 
@@ -2324,12 +2499,14 @@
                                         <input type="tel" class="form-control" id="no_wa" name="no_wa"
                                             placeholder="08xxxxxxxxxx" required>
                                     </div>
-                                    <small class="text-muted" style="font-size: 0.78rem;">Kartu ujian &amp; informasi
+                                    <small class="text-muted" style="font-size: 0.78rem;">Kartu ujian &amp;
+                                        informasi
                                         kelulusan akan dikirimkan juga ke nomor ini.</small>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label" for="pekerjaan_wali">Pekerjaan Orang Tua / Wali</label>
+                                    <label class="form-label" for="pekerjaan_wali">Pekerjaan Orang Tua /
+                                        Wali</label>
                                     <input type="text" class="form-control" id="pekerjaan_wali"
                                         name="pekerjaan_wali" placeholder="PNS / Wiraswasta / Karyawan / Lainnya">
                                 </div>
@@ -2379,13 +2556,15 @@
                                     <select class="form-select" id="model_ujian" name="model_ujian" required>
                                         <option value="Tatap Muka di Pesantren" selected>Ujian Tatap Muka Langsung di
                                             Kampus Pesantren</option>
-                                        <option value="Online / Jarak Jauh">Ujian Daring Online (Khusus Luar Provinsi /
+                                        <option value="Online / Jarak Jauh">Ujian Daring Online (Khusus Luar Provinsi
+                                            /
                                             Pulau)</option>
                                     </select>
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label" for="catatan_prestasi">Catatan Hafalan / Prestasi Calon
+                                    <label class="form-label" for="catatan_prestasi">Catatan Hafalan / Prestasi
+                                        Calon
                                         Santri (Bila Ada)</label>
                                     <input type="text" class="form-control" id="catatan_prestasi"
                                         name="catatan_prestasi"
@@ -2395,7 +2574,8 @@
 
                             <!-- Deklarasi & Persetujuan -->
                             <div class="form-check p-3 bg-light rounded-3 mb-4 border">
-                                <input class="form-check-input ms-0 me-2" type="checkbox" id="persetujuan" required>
+                                <input class="form-check-input ms-0 me-2" type="checkbox" id="persetujuan"
+                                    required>
                                 <label class="form-check-label small text-dark" for="persetujuan">
                                     Dengan ini saya menyatakan bahwa data yang saya isikan adalah benar, dan saya
                                     bersedia mengikuti rangkaian <strong>Ujian Masuk Seleksi Santri Baru</strong> sesuai
@@ -2412,7 +2592,8 @@
                                     </button>
                                 @else
                                     <button type="submit" class="btn btn-gold btn-lg py-3 fw-bold fs-6">
-                                        <i class="bi bi-send-check-fill me-2"></i> Kirim Formulir &amp; Terbitkan Kartu
+                                        <i class="bi bi-send-check-fill me-2"></i> Kirim Formulir &amp; Terbitkan
+                                        Kartu
                                         Ujian Masuk
                                     </button>
                                 @endif
@@ -2568,6 +2749,99 @@
                     </a>
                 </div>
             </div>
+
+            <!-- ============================================================== -->
+            <!-- SECTION 5B: EMBEDDED MAP (PETA LOKASI RESMI GOOGLE MAPS)       -->
+            <!-- ============================================================== -->
+            <div id="lokasi-peta" class="row mt-5 pt-2">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden"
+                        style="border: 1px solid #e2e8f0 !important;">
+                        <!-- Map Header Bar -->
+                        <div
+                            class="card-header bg-white p-3 p-md-4 border-bottom d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <span
+                                    class="p-2 bg-success text-white rounded-3 shadow-sm d-inline-flex align-items-center justify-content-center flex-shrink-0"
+                                    style="width: 48px; height: 48px;">
+                                    <i class="bi bi-geo-alt-fill fs-4"></i>
+                                </span>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <h5 class="fw-bold mb-0 text-dark">Peta Lokasi &amp; Navigasi Kampus Pesantren
+                                        </h5>
+                                        <span class="badge bg-success bg-opacity-10 text-success fw-bold">
+                                            <i class="bi bi-check-circle-fill me-1"></i> Google Maps Interaktif
+                                        </span>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">
+                                        <i
+                                            class="bi bi-pin-map-fill text-danger me-1"></i>{{ $ppdbSetting->alamat }}
+                                    </small>
+                                </div>
+                            </div>
+                            <!-- Action Buttons -->
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" id="btnSalinAlamat"
+                                    class="btn btn-outline-secondary btn-sm px-3 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm"
+                                    data-alamat="{{ $ppdbSetting->alamat }}"
+                                    onclick="salinAlamatPesantren(this.dataset.alamat)">
+                                    <i class="bi bi-clipboard-check"></i> <span id="btnSalinText">Salin
+                                        Alamat</span>
+                                </button>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($ppdbSetting->nama_pesantren . ' ' . $ppdbSetting->alamat) }}"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-outline-success btn-sm px-3 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm">
+                                    <i class="bi bi-box-arrow-up-right"></i> Buka Google Maps
+                                </a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ urlencode($ppdbSetting->nama_pesantren . ' ' . $ppdbSetting->alamat) }}"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-gold btn-sm px-3 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm">
+                                    <i class="bi bi-signpost-2-fill"></i> Petunjuk Rute / Arah
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Embedded Map Container -->
+                        <div class="position-relative"
+                            style="height: 440px; min-height: 380px; background-color: #f1f5f9;">
+                            <iframe id="googleMapsIframe"
+                                src="https://maps.google.com/maps?q={{ urlencode($ppdbSetting->nama_pesantren . ' ' . $ppdbSetting->alamat) }}&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                                width="100%" height="100%"
+                                style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
+                                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                                title="Peta Lokasi {{ $ppdbSetting->nama_pesantren }}">
+                            </iframe>
+                            <!-- Floating Badge Info on Map -->
+                            <div class="position-absolute bottom-0 start-0 m-3 d-none d-md-flex align-items-center gap-2 p-2 px-3 bg-white bg-opacity-95 rounded-3 shadow-sm border small"
+                                style="backdrop-filter: blur(8px); z-index: 2;">
+                                <i class="bi bi-compass text-success fs-5"></i>
+                                <div>
+                                    <strong class="text-dark d-block" style="font-size: 0.82rem;">Kompleks Asrama
+                                        &amp; Gedung Utama</strong>
+                                    <span class="text-muted" style="font-size: 0.75rem;">Akses jalan representatif
+                                        roda dua &amp; roda empat</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Map Footer Info Bar -->
+                        <div
+                            class="card-footer bg-light p-3 px-4 d-flex flex-wrap align-items-center justify-content-between gap-3 small text-muted">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-info-circle-fill text-success"></i>
+                                <span>Gunakan kontrol zoom (<kbd class="bg-white text-dark border">+</kbd> / <kbd
+                                        class="bg-white text-dark border">-</kbd>) atau geser peta untuk melihat rute
+                                    jalan menuju komplek pesantren.</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <span><i class="bi bi-car-front-fill text-primary me-1"></i> Area Parkir Luas</span>
+                                <span><i class="bi bi-shield-check text-success me-1"></i> Keamanan 24 Jam</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -2579,17 +2853,10 @@
             <div class="row gy-4 mb-5">
                 <div class="col-lg-5">
                     <div class="d-flex align-items-center gap-2 mb-3">
-                        @if ($ppdbSetting->logo_url)
-                            <img src="{{ $ppdbSetting->logo_url }}" alt="Logo Pesantren"
-                                class="rounded-3 shadow-sm flex-shrink-0 bg-white p-1"
-                                style="width: 42px; height: 42px; object-fit: contain;">
-                        @else
-                            <span
-                                class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-3"
-                                style="width: 42px; height: 42px;">
-                                <i class="bi bi-book-half fs-4"></i>
-                            </span>
-                        @endif
+                        <img src="{{ $ppdbSetting->logo_url ?? asset('images/logo.png') }}" alt="Logo Pesantren"
+                            class="rounded-3 shadow-sm flex-shrink-0 bg-white p-1"
+                            style="width: 42px; height: 42px; object-fit: contain;"
+                            onerror="if (!this.dataset.step) { this.dataset.step = '1'; this.src='{{ asset('images/logo.png') }}'; } else if (this.dataset.step === '1') { this.dataset.step = '2'; this.src='{{ asset('storage/images/logo.png') }}'; } else { this.style.display='none'; }">
                         <div>
                             <h5 class="fw-bold mb-0">PP. LI ULIL ALBAB</h5>
                             <small class="text-warning">Islamic Boarding School</small>
@@ -2601,14 +2868,15 @@
                         berwawasan global.
                     </p>
                     <div class="d-flex gap-2">
-                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle"><i
-                                class="bi bi-facebook"></i></a>
-                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle"><i
-                                class="bi bi-instagram"></i></a>
-                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle"><i
-                                class="bi bi-youtube"></i></a>
-                        <a href="https://wa.me/6287799107735" target="_blank"
-                            class="btn btn-sm btn-outline-light rounded-circle"><i class="bi bi-whatsapp"></i></a>
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $ppdbSetting->telepon ?? '6287799107735') }}?text=Halo%20Admin%20Pondok%20Pesantren%20Li%20Ulil%20Albab"
+                            target="_blank" class="btn btn-sm btn-outline-light rounded-circle"
+                            title="WhatsApp Konsultasi PPDB"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#video" class="btn btn-sm btn-outline-light rounded-circle"
+                            title="Video Galeri Santri"><i class="bi bi-youtube"></i></a>
+                        <a href="#kegiatan" class="btn btn-sm btn-outline-light rounded-circle"
+                            title="Dokumentasi Foto Kegiatan"><i class="bi bi-camera-fill"></i></a>
+                        <a href="#formulir-ppdb" class="btn btn-sm btn-outline-light rounded-circle"
+                            title="Pendaftaran PPDB"><i class="bi bi-pencil-square"></i></a>
                     </div>
                 </div>
 
@@ -2616,13 +2884,25 @@
                     <h6 class="fw-bold text-warning mb-3">Navigasi Portal</h6>
                     <ul class="list-unstyled small text-white-50 d-flex flex-column gap-2 mb-0">
                         <li><a href="#beranda" class="text-white-50 text-decoration-none">Beranda Utama</a></li>
-                        <li><a href="#profil" onclick="switchProfilTab('tab-profil-btn')" class="text-white-50 text-decoration-none"><i class="bi bi-building text-warning me-1"></i> Profil &amp; Sejarah</a></li>
-                        <li><a href="#profil" onclick="switchProfilTab('tab-visimisi-btn')" class="text-white-50 text-decoration-none"><i class="bi bi-compass text-warning me-1"></i> Visi, Misi &amp; Nilai</a></li>
-                        <li><a href="#profil" onclick="switchProfilTab('tab-struktur-btn')" class="text-white-50 text-decoration-none"><i class="bi bi-diagram-3-fill text-warning me-1"></i> Struktur Kepengurusan</a></li>
-                        <li><a href="#kegiatan" class="text-white-50 text-decoration-none">Dokumentasi Foto Kegiatan</a></li>
-                        <li><a href="#video" class="text-white-50 text-decoration-none">Video Galeri Santri</a></li>
-                        <li><a href="#alur-ujian" class="text-white-50 text-decoration-none">Alur Persyaratan &amp; Ujian</a></li>
-                        <li><a href="#formulir-ppdb" class="text-white-50 text-decoration-none">Formulir PPDB Online</a></li>
+                        <li><a href="#profil" onclick="switchProfilTab('tab-profil-btn')"
+                                class="text-white-50 text-decoration-none"><i
+                                    class="bi bi-building text-warning me-1"></i> Profil &amp; Sejarah</a></li>
+                        <li><a href="#profil" onclick="switchProfilTab('tab-visimisi-btn')"
+                                class="text-white-50 text-decoration-none"><i
+                                    class="bi bi-compass text-warning me-1"></i> Visi, Misi &amp; Nilai</a></li>
+                        <li><a href="#profil" onclick="switchProfilTab('tab-struktur-btn')"
+                                class="text-white-50 text-decoration-none"><i
+                                    class="bi bi-diagram-3-fill text-warning me-1"></i> Struktur Kepengurusan</a></li>
+                        <li><a href="#kegiatan" class="text-white-50 text-decoration-none">Dokumentasi Foto
+                                Kegiatan</a></li>
+                        <li><a href="#video" class="text-white-50 text-decoration-none">Video Galeri Santri</a>
+                        </li>
+                        <li><a href="#alur-ujian" class="text-white-50 text-decoration-none">Alur Persyaratan &amp;
+                                Ujian</a></li>
+                        <li><a href="#formulir-ppdb" class="text-white-50 text-decoration-none">Formulir PPDB
+                                Online</a></li>
+                        <li><a href="#lokasi-peta" class="text-white-50 text-decoration-none"><i
+                                    class="bi bi-geo-alt-fill text-warning me-1"></i> Peta Lokasi Pesantren</a></li>
                     </ul>
                 </div>
 
@@ -2738,17 +3018,10 @@
                         <!-- Kop Surat Kartu -->
                         <div class="kartu-header d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center gap-3">
-                                @if ($ppdbSetting->logo_url)
-                                    <img src="{{ $ppdbSetting->logo_url }}" alt="Logo Pesantren"
-                                        class="rounded-3 shadow-sm bg-white p-1"
-                                        style="width: 50px; height: 50px; object-fit: contain;">
-                                @else
-                                    <span
-                                        class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-3"
-                                        style="width: 50px; height: 50px;">
-                                        <i class="bi bi-book-half fs-3"></i>
-                                    </span>
-                                @endif
+                                <img src="{{ $ppdbSetting->logo_url ?? asset('images/logo.png') }}" alt="Logo Pesantren"
+                                    class="rounded-3 shadow-sm bg-white p-1"
+                                    style="width: 50px; height: 50px; object-fit: contain;"
+                                    onerror="if (!this.dataset.step) { this.dataset.step = '1'; this.src='{{ asset('images/logo.png') }}'; } else if (this.dataset.step === '1') { this.dataset.step = '2'; this.src='{{ asset('storage/images/logo.png') }}'; } else { this.style.display='none'; }">
                                 <div>
                                     <h5 class="fw-bold mb-0 text-success">PANITIA PENERIMAAN SANTRI BARU (PPDB)</h5>
                                     <h6 class="fw-bold mb-0 text-dark">PONDOK PESANTREN MODERN LI ULIL ALBAB</h6>
@@ -2827,6 +3100,21 @@
                             </table>
                         </div>
 
+                        <!-- Kotak Informasi Ujian Akademik CBT Online (50 Butir Soal) -->
+                        <div
+                            class="p-3 bg-success bg-opacity-10 border border-success rounded-3 small text-dark mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div>
+                                <strong class="text-success fs-6"><i class="bi bi-laptop me-1"></i> Syarat Ujian
+                                    Akademik Online (50 Soal)</strong>
+                                <div class="text-muted">Calon santri wajib mengerjakan tes potensi akademik secara
+                                    online. Hasil & nilai langsung diterbitkan sistem.</div>
+                            </div>
+                            <a id="btnMulaiUjianCbtDirect" href="{{ route('ppdb.exam.index') }}"
+                                class="btn btn-success btn-sm fw-bold">
+                                <i class="bi bi-play-circle-fill me-1"></i> Kerjakan Ujian Sekarang &raquo;
+                            </a>
+                        </div>
+
                         <!-- Catatan Penting Saat Ujian -->
                         <div
                             class="p-3 bg-warning bg-opacity-10 border border-warning rounded-3 small text-dark mb-2">
@@ -2845,16 +3133,21 @@
                     </div>
                 </div>
 
-                <div class="modal-footer bg-light px-4 py-3 d-flex justify-content-between align-items-center">
+                <div
+                    class="modal-footer bg-light px-4 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <button type="button" class="btn btn-outline-secondary"
                         data-bs-dismiss="modal">Tutup</button>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-success fw-bold" onclick="window.print()">
-                            <i class="bi bi-printer-fill me-1"></i> Cetak Kartu Ujian (PDF / Print)
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-outline-success fw-bold" onclick="window.print()">
+                            <i class="bi bi-printer-fill me-1"></i> Cetak Kartu
                         </button>
                         <a id="btnKonfirmasiWA" href="#" target="_blank"
-                            class="btn btn-warning fw-bold text-dark">
-                            <i class="bi bi-whatsapp me-1"></i> Konfirmasi ke WA Panitia
+                            class="btn btn-outline-warning text-dark fw-bold">
+                            <i class="bi bi-whatsapp me-1"></i> WA Panitia
+                        </a>
+                        <a id="btnMulaiUjianCbt" href="{{ route('ppdb.exam.index') }}"
+                            class="btn btn-gold fw-bold text-white shadow-sm">
+                            <i class="bi bi-laptop me-1"></i> Mulai Ujian Tes Akademik &raquo;
                         </a>
                     </div>
                 </div>
@@ -2887,16 +3180,45 @@
 
         // 2. Tampilkan Detail Modal Kegiatan
         function lihatDetailKegiatan(title, date, location, category, imgUrl, description) {
-            document.getElementById('modalKegiatanTitle').innerText = title;
-            document.getElementById('modalKegiatanTanggal').innerText = date;
-            document.getElementById('modalKegiatanLokasi').innerText = location;
-            document.getElementById('modalKegiatanBadge').innerText = category;
-            document.getElementById('modalKegiatanImg').src = imgUrl;
-            document.getElementById('modalKegiatanDesc').innerText = description;
+            document.getElementById('modalKegiatanTitle').textContent = title || '';
+            document.getElementById('modalKegiatanTanggal').textContent = date || '';
+            document.getElementById('modalKegiatanLokasi').textContent = location || '';
+            document.getElementById('modalKegiatanBadge').textContent = category || '';
+            document.getElementById('modalKegiatanImg').src = imgUrl || '';
+            document.getElementById('modalKegiatanDesc').textContent = description || '';
 
-            const modal = new bootstrap.Modal(document.getElementById('modalDetailKegiatan'));
+            const modalEl = document.getElementById('modalDetailKegiatan');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
             modal.show();
         }
+
+        // Event listener delegasi aman untuk Detail Dokumentasi & Putar Video
+        document.addEventListener('click', function(e) {
+            const btnDetail = e.target.closest('.btn-detail-kegiatan');
+            if (btnDetail) {
+                e.preventDefault();
+                lihatDetailKegiatan(
+                    btnDetail.dataset.judul,
+                    btnDetail.dataset.tanggal,
+                    btnDetail.dataset.lokasi,
+                    btnDetail.dataset.kategori,
+                    btnDetail.dataset.gambar,
+                    btnDetail.dataset.deskripsi
+                );
+                return;
+            }
+
+            const btnVideo = e.target.closest('.btn-putar-video');
+            if (btnVideo) {
+                e.preventDefault();
+                putarVideoModal(
+                    btnVideo.dataset.source,
+                    btnVideo.dataset.title,
+                    btnVideo.dataset.isLocal === '1'
+                );
+                return;
+            }
+        });
 
         // 3. Putar Video di Modal (Mendukung YouTube & Video Upload Perangkat)
         function putarVideoModal(source, title, isLocal = false) {
@@ -2998,6 +3320,16 @@
                         );
                         document.getElementById('btnKonfirmasiWA').href = `https://wa.me/6287799107735?text=${waText}`;
 
+                        // Pasang link ujian CBT dengan nomor registrasi yang sudah terisi otomatis
+                        const examUrl =
+                            `{{ route('ppdb.exam.index') }}?no_pendaftaran=${encodeURIComponent(data.no_pendaftaran)}`;
+                        if (document.getElementById('btnMulaiUjianCbt')) {
+                            document.getElementById('btnMulaiUjianCbt').href = examUrl;
+                        }
+                        if (document.getElementById('btnMulaiUjianCbtDirect')) {
+                            document.getElementById('btnMulaiUjianCbtDirect').href = examUrl;
+                        }
+
                         // Update Dynamic Quick Stats di Halaman Beranda Secara Real-Time!
                         const statPpdb = document.getElementById('statPendaftarPpdb');
                         if (statPpdb) {
@@ -3032,7 +3364,8 @@
         // 5. Buka Kartu Ujian jika dari Session Flash Laravel
         @if (session('ppdb_success'))
             function bukaKartuUjianDariSession() {
-                document.getElementById('kartuNoUjian').innerText = "{{ session('ppdb_success')['no_pendaftaran'] }}";
+                const sessionNo = "{{ session('ppdb_success')['no_pendaftaran'] }}";
+                document.getElementById('kartuNoUjian').innerText = sessionNo;
                 document.getElementById('kartuJalurUjian').innerText = "Jalur: {{ session('ppdb_success')['jalur'] }}";
                 document.getElementById('kartuNamaSantri').innerText = "{{ session('ppdb_success')['nama_lengkap'] }}";
                 document.getElementById('kartuJenisKelamin').innerText = "{{ session('ppdb_success')['jenis_kelamin'] }}";
@@ -3049,6 +3382,14 @@
                     "Assalamu'alaikum Panitia PPDB Pesantren Li Ulil Albab. Saya sudah mengisi formulir PPDB online dengan Nomor Pendaftaran: {{ session('ppdb_success')['no_pendaftaran'] }} atas nama santri: {{ session('ppdb_success')['nama_lengkap'] }} ({{ session('ppdb_success')['jenjang'] }}). Mohon konfirmasi jadwal ujian masuk. Terima kasih."
                 );
                 document.getElementById('btnKonfirmasiWA').href = `https://wa.me/6281234567890?text=${waText}`;
+
+                const sessionExamUrl = `{{ route('ppdb.exam.index') }}?no_pendaftaran=${encodeURIComponent(sessionNo)}`;
+                if (document.getElementById('btnMulaiUjianCbt')) {
+                    document.getElementById('btnMulaiUjianCbt').href = sessionExamUrl;
+                }
+                if (document.getElementById('btnMulaiUjianCbtDirect')) {
+                    document.getElementById('btnMulaiUjianCbtDirect').href = sessionExamUrl;
+                }
 
                 const modalKartu = new bootstrap.Modal(document.getElementById('modalKartuUjian'));
                 modalKartu.show();
@@ -3076,18 +3417,66 @@
                 switchProfilTab('tab-visimisi-btn');
                 const profilEl = document.getElementById('profil');
                 if (profilEl) {
-                    profilEl.scrollIntoView({ behavior: 'smooth' });
+                    profilEl.scrollIntoView({
+                        behavior: 'smooth'
+                    });
                 }
             } else if (hash === '#struktur' || hash === '#struktur-pengurus' || hash === '#struktur-organisasi') {
                 switchProfilTab('tab-struktur-btn');
                 const profilEl = document.getElementById('profil');
                 if (profilEl) {
-                    profilEl.scrollIntoView({ behavior: 'smooth' });
+                    profilEl.scrollIntoView({
+                        behavior: 'smooth'
+                    });
                 }
             } else if (hash === '#profil' || hash === '#profil-sejarah') {
                 switchProfilTab('tab-profil-btn');
             }
         });
+
+        // 7. Salin Alamat Pesantren ke Clipboard
+        function salinAlamatPesantren(alamat) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(alamat).then(() => {
+                    const btnText = document.getElementById('btnSalinText');
+                    if (btnText) {
+                        const original = btnText.innerText;
+                        btnText.innerText = 'Alamat Disalin! ✓';
+                        setTimeout(() => {
+                            btnText.innerText = original;
+                        }, 2500);
+                    }
+                }).catch(() => {
+                    fallbackSalinTeks(alamat);
+                });
+            } else {
+                fallbackSalinTeks(alamat);
+            }
+        }
+
+        function fallbackSalinTeks(teks) {
+            const textarea = document.createElement('textarea');
+            textarea.value = teks;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                const btnText = document.getElementById('btnSalinText');
+                if (btnText) {
+                    const original = btnText.innerText;
+                    btnText.innerText = 'Alamat Disalin! ✓';
+                    setTimeout(() => {
+                        btnText.innerText = original;
+                    }, 2500);
+                }
+            } catch (err) {
+                alert('Alamat Pesantren:\n' + teks);
+            }
+            document.body.removeChild(textarea);
+        }
     </script>
 </body>
 

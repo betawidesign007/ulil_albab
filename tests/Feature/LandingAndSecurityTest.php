@@ -47,7 +47,7 @@ class LandingAndSecurityTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee('Slide Show 4 Video Unggulan Santri');
+        $response->assertSee('4 Video Unggulan Santri');
         $response->assertSee('Santri Aktif Mukim');
         $response->assertSee('Dewan Asatidz');
         $response->assertSee('Santri Baru Terdaftar (PPDB)');

@@ -43,6 +43,13 @@
                                     <i class="bi bi-people-fill me-1"></i> Data Santri ({{ $totalSantri }})
                                 </a>
 
+                                @if (!$user->isPengajar())
+                                    <a href="{{ route('pembayaran.index') }}"
+                                        class="btn btn-outline-light btn-sm px-3 py-2">
+                                        <i class="bi bi-cash-coin me-1"></i> Pembayaran
+                                    </a>
+                                @endif
+
                                 @if ($user->isAdmin())
                                     <a href="{{ route('admin.ppdb.index') }}" class="btn btn-outline-light btn-sm px-3 py-2">
                                         <i class="bi bi-sliders2 me-1"></i> Pengaturan PPDB &amp; Web
@@ -228,7 +235,7 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                        <table class="table table-hover align-middle mb-0" style="min-width: 680px;">
                             <thead class="table-light small">
                                 <tr>
                                     <th class="py-3 px-4">NIS</th>

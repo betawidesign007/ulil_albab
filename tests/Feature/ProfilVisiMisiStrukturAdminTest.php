@@ -43,9 +43,11 @@ class ProfilVisiMisiStrukturAdminTest extends TestCase
         $response = $this->actingAs($this->admin)->get('/admin/ppdb-setting');
 
         $response->assertStatus(200);
+        $response->assertSee('Pengaturan 4 Pilar Keunggulan Kurikulum Pesantren &amp; Santri', false);
         $response->assertSee('Pengaturan Profil &amp; Sejarah Lembaga Pesantren', false);
         $response->assertSee('Pengaturan Visi, Misi &amp; Standar Kelulusan', false);
         $response->assertSee('Pengaturan Struktur Kepengurusan &amp; Organisasi', false);
+        $response->assertSee('pilar_keunggulan_judul');
         $response->assertSee('sambutan_pengasuh_nama');
         $response->assertSee('visi_pesantren');
         $response->assertSee('struktur[puncak][nama]');
@@ -335,5 +337,81 @@ class ProfilVisiMisiStrukturAdminTest extends TestCase
         $landing->assertSee('Wakil Pengasuh Bidang Kemandirian');
         $landing->assertSee('Ustadz Baru Divisi Sarpras, S.T');
         $landing->assertSee('Kepala Bagian Sarana &amp; Prasarana', false);
+    }
+
+    /**
+     * Admin dapat memperbarui 4 pilar keunggulan santri dan langsung tampil di landing page
+     */
+    public function test_admin_can_update_pilar_keunggulan_and_it_renders_on_landing_page(): void
+    {
+        $setting = PpdbSetting::getActive();
+
+        $payload = [
+            'nama_pesantren' => $setting->nama_pesantren,
+            'tagline_pesantren' => $setting->tagline_pesantren,
+            'telepon' => $setting->telepon,
+            'email' => $setting->email,
+            'alamat' => $setting->alamat,
+            'status_ppdb' => $setting->status_ppdb,
+            'tahun_ajaran' => $setting->tahun_ajaran,
+            'gelombang_aktif' => $setting->gelombang_aktif,
+            'kuota_penerimaan' => $setting->kuota_penerimaan,
+            'biaya_pendaftaran' => $setting->biaya_pendaftaran,
+            'tanggal_buka_pendaftaran' => $setting->tanggal_buka_pendaftaran,
+            'tanggal_tutup_pendaftaran' => $setting->tanggal_tutup_pendaftaran,
+            'tanggal_ujian_seleksi' => $setting->tanggal_ujian_seleksi,
+            'tanggal_pengumuman' => $setting->tanggal_pengumuman,
+            'tanggal_daftar_ulang' => $setting->tanggal_daftar_ulang,
+            'jam_ujian' => $setting->jam_ujian,
+            'lokasi_ujian' => $setting->lokasi_ujian,
+            'pilar_keunggulan_judul' => '4 Pilar Keunggulan Pendidikan Santri Masa Depan',
+            'pilar_keunggulan_deskripsi' => 'Fondasi utama kurikulum terintegrasi pesantren modern.',
+            'pilar' => [
+                [
+                    'judul' => '1. Tahfidz Mutqin Bersanad Syathibiyyah',
+                    'deskripsi' => 'Setoran hafalan 30 juz dengan bimbingan talaqqi langsung para huffazh bersanad.',
+                    'icon' => 'bi-book-half',
+                    'color' => 'success',
+                ],
+                [
+                    'judul' => '2. Penguasaan Turats & Kitab Fathul Qorib',
+                    'deskripsi' => 'Kajian mendalam gramatika nahwu shorof dan fiqih peribadatan madzhab.',
+                    'icon' => 'bi-journal-bookmark-fill',
+                    'color' => 'warning',
+                ],
+                [
+                    'judul' => '3. Bahasa Internasional Arab & Inggris Aktif',
+                    'deskripsi' => 'Muhadatsah harian dan public speaking contest mingguan santri.',
+                    'icon' => 'bi-translate',
+                    'color' => 'primary',
+                ],
+                [
+                    'judul' => '4. Sains, Robotika & Kecerdasan Artifisial',
+                    'deskripsi' => 'Laboratorium IT modern dengan riset terpadu kurikulum merdeka.',
+                    'icon' => 'bi-laptop',
+                    'color' => 'danger',
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($this->admin)->put('/admin/ppdb-setting', $payload);
+        $response->assertRedirect('/admin/ppdb-setting');
+        $response->assertSessionHas('success');
+
+        $fresh = PpdbSetting::getActive();
+        $this->assertEquals('4 Pilar Keunggulan Pendidikan Santri Masa Depan', $fresh->pilar_keunggulan_judul);
+        $this->assertEquals('Fondasi utama kurikulum terintegrasi pesantren modern.', $fresh->pilar_keunggulan_deskripsi);
+        $this->assertCount(4, $fresh->pilar_keunggulan_list);
+        $this->assertEquals('1. Tahfidz Mutqin Bersanad Syathibiyyah', $fresh->pilar_keunggulan_list[0]['judul']);
+        $this->assertEquals('4. Sains, Robotika & Kecerdasan Artifisial', $fresh->pilar_keunggulan_list[3]['judul']);
+
+        // Verifikasi tampil di landing page publik
+        $landing = $this->get('/');
+        $landing->assertStatus(200);
+        $landing->assertSee('4 Pilar Keunggulan Pendidikan Santri Masa Depan');
+        $landing->assertSee('Fondasi utama kurikulum terintegrasi pesantren modern.');
+        $landing->assertSee('1. Tahfidz Mutqin Bersanad Syathibiyyah');
+        $landing->assertSee('4. Sains, Robotika & Kecerdasan Artifisial');
+        $landing->assertSee('Laboratorium IT modern dengan riset terpadu kurikulum merdeka.');
     }
 }

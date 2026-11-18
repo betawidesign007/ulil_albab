@@ -48,7 +48,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-3">
                 <form action="{{ route('santri.index') }}" method="GET" class="row g-2 align-items-center">
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
                             <input type="text" name="search" value="{{ request('search') }}" class="form-control border-start-0" placeholder="Cari Nama Lengkap / NIS...">
@@ -81,12 +81,12 @@
                             <option value="Perempuan" {{ request('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan (Banat)</option>
                         </select>
                     </div>
-                    <div class="col-6 col-md-2 d-flex gap-2">
-                        <button type="submit" class="btn btn-success w-100">
+                    <div class="col-6 col-md-2 d-flex gap-1">
+                        <button type="submit" class="btn btn-success flex-grow-1">
                             <i class="bi bi-filter"></i> Filter
                         </button>
                         @if(request()->hasAny(['search', 'kamar', 'kelas', 'jenis_kelamin']))
-                            <a href="{{ route('santri.index') }}" class="btn btn-outline-secondary" title="Reset Filter">
+                            <a href="{{ route('santri.index') }}" class="btn btn-outline-secondary px-2" title="Reset Filter">
                                 <i class="bi bi-arrow-counterclockwise"></i>
                             </a>
                         @endif
@@ -101,7 +101,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0" style="min-width: 720px;">
                         <thead class="table-light small">
                             <tr>
                                 <th class="py-3 px-4">NIS</th>
@@ -118,7 +118,11 @@
                                     <td class="px-4 fw-bold text-success">{{ $santri->nis }}</td>
                                     <td>
                                         <div class="fw-semibold text-dark">{{ $santri->nama_lengkap }}</div>
-                                        <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ $santri->tempat_lahir }}</small>
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt me-1"></i>{{ $santri->tempat_lahir }}
+                                            @if($santri->usia) &bull; {{ $santri->usia }} Thn @endif
+                                            @if($santri->nama_orang_tua) &bull; Wali: {{ $santri->nama_orang_tua }} @endif
+                                        </small>
                                     </td>
                                     <td>
                                         <span class="badge {{ $santri->jenis_kelamin == 'Laki-laki' ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle' }} rounded-pill px-2 py-1">

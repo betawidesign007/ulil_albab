@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PpdbRegistration extends Model
 {
@@ -33,5 +34,10 @@ class PpdbRegistration extends Model
         return [
             'tanggal_lahir' => 'date',
         ];
+    }
+
+    public function examResult(): HasOne
+    {
+        return $this->hasOne(PpdbExamResult::class, 'ppdb_registration_id');
     }
 }

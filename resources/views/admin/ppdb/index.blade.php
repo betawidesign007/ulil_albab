@@ -19,8 +19,14 @@
                 Seluruh data informasi penerimaan, jadwal, kuota, persyaratan, dan kontak di halaman utama website dapat dikontrol langsung dari halaman ini.
             </p>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('landing') }}#alur-ujian" target="_blank" class="btn btn-sm btn-outline-success shadow-sm py-2 px-3 fw-semibold" style="font-size: 0.8rem;">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="{{ route('admin.ppdb.soal.index') }}" class="btn btn-sm btn-outline-success shadow-sm py-2 px-3 fw-semibold" style="font-size: 0.8rem;">
+                <i class="bi bi-journal-text me-1"></i> Bank Soal Ujian (50 Soal)
+            </a>
+            <a href="{{ route('admin.ppdb.nilai.index') }}" class="btn btn-sm btn-success shadow-sm py-2 px-3 fw-semibold" style="font-size: 0.8rem;">
+                <i class="bi bi-award-fill me-1"></i> Nilai &amp; Hasil Ujian Santri
+            </a>
+            <a href="{{ route('landing') }}#alur-ujian" target="_blank" class="btn btn-sm btn-outline-secondary shadow-sm py-2 px-3 fw-semibold" style="font-size: 0.8rem;">
                 <i class="bi bi-box-arrow-up-right me-1"></i> Preview di Website Utama
             </a>
         </div>
@@ -324,6 +330,117 @@
                         <textarea name="berkas_wajib" rows="8" class="form-control font-monospace @error('berkas_wajib') is-invalid @enderror" style="font-size: 0.9rem;" placeholder="Tuliskan berkas wajib, pisahkan tiap dokumen dengan baris baru (Enter)...">{{ old('berkas_wajib', $setting->berkas_wajib) }}</textarea>
                         <div class="form-text">Setiap baris teks di atas otomatis ditampilkan dalam kotak berkas fisik di landing page.</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bagian 4: 4 Pilar Keunggulan Kurikulum Pesantren & Santri -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                    <span class="badge bg-success bg-opacity-10 text-success p-2 rounded-circle">
+                        <i class="bi bi-mortarboard-fill fs-6"></i>
+                    </span>
+                    4. Pengaturan 4 Pilar Keunggulan Kurikulum Pesantren &amp; Santri
+                </h5>
+                <span class="badge bg-light text-muted border">Tampil di Bagian Kurikulum &amp; Profil Santri</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Judul Utama Bagian Pilar <span class="text-danger">*</span></label>
+                        <input type="text" name="pilar_keunggulan_judul" class="form-control @error('pilar_keunggulan_judul') is-invalid @enderror" value="{{ old('pilar_keunggulan_judul', $setting->pilar_keunggulan_judul) }}" placeholder="Contoh: 4 Pilar Keunggulan Kurikulum Pesantren" required>
+                        <div class="form-text">Judul headline yang ditampilkan di atas kartu pilar keunggulan santri di website.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">Subjudul / Keterangan Singkat</label>
+                        <input type="text" name="pilar_keunggulan_deskripsi" class="form-control @error('pilar_keunggulan_deskripsi') is-invalid @enderror" value="{{ old('pilar_keunggulan_deskripsi', $setting->pilar_keunggulan_deskripsi) }}" placeholder="Contoh: Ciri khas pendidikan terpadu yang membedakan santri Li Ulil Albab">
+                        <div class="form-text">Keterangan deskriptif di bawah judul utama pilar.</div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pt-3 border-top">
+                    <div>
+                        <h6 class="fw-bold text-dark mb-1"><i class="bi bi-grid-fill text-success me-1"></i> Daftar Kartu Pilar Keunggulan Santri</h6>
+                        <small class="text-muted">Kelola poin pilar keunggulan, ubah judul, uraian, warna aksen, serta ikon.</small>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1 shadow-sm px-3 fw-semibold" onclick="tambahPilarCard()">
+                        <i class="bi bi-plus-circle-fill"></i> + Tambah Pilar Baru
+                    </button>
+                </div>
+
+                @php
+                    $pilarList = $setting->pilar_keunggulan_list;
+                @endphp
+
+                <div class="row g-3" id="pilarContainer">
+                    @foreach($pilarList as $idx => $item)
+                        <div class="col-md-6 col-lg-3 pilar-card-item" id="pilarCard_{{ $idx }}" data-index="{{ $idx }}">
+                            <div class="p-3 bg-white rounded-3 border border-2 border-success-subtle h-100 shadow-sm d-flex flex-column justify-content-between position-relative">
+                                <div>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="badge bg-success pilar-badge">Pilar #{{ $idx + 1 }}</span>
+                                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 border-0" title="Hapus pilar ini" onclick="hapusPilarCard(this)">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </button>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold text-dark mb-1">Judul Pilar <span class="text-danger">*</span></label>
+                                        <input type="text" name="pilar[{{ $idx }}][judul]" class="form-control form-control-sm pilar-judul" value="{{ old("pilar.{$idx}.judul", $item['judul'] ?? '') }}" placeholder="Contoh: 1. Tahfidz 30 Juz Bersanad" required>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold text-dark mb-1">Deskripsi / Uraian</label>
+                                        <textarea name="pilar[{{ $idx }}][deskripsi]" rows="4" class="form-control form-control-sm" placeholder="Penjelasan keunggulan pilar ini...">{{ old("pilar.{$idx}.deskripsi", $item['deskripsi'] ?? '') }}</textarea>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold text-dark mb-1">Warna Aksen</label>
+                                        <select name="pilar[{{ $idx }}][color]" class="form-select form-select-sm pilar-color-select" onchange="updatePilarPreview(this)">
+                                            <option value="success" {{ ($item['color'] ?? '') === 'success' ? 'selected' : '' }}>🟢 Hijau (Success)</option>
+                                            <option value="warning" {{ ($item['color'] ?? '') === 'warning' ? 'selected' : '' }}>🟡 Kuning Emas (Warning)</option>
+                                            <option value="primary" {{ ($item['color'] ?? '') === 'primary' ? 'selected' : '' }}>🔵 Biru (Primary)</option>
+                                            <option value="danger" {{ ($item['color'] ?? '') === 'danger' ? 'selected' : '' }}>🔴 Merah (Danger)</option>
+                                            <option value="info" {{ ($item['color'] ?? '') === 'info' ? 'selected' : '' }}>🔷 Cyan (Info)</option>
+                                            <option value="dark" {{ ($item['color'] ?? '') === 'dark' ? 'selected' : '' }}>⚫ Gelap (Dark)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold text-dark mb-1">Pilih Ikon Cepat</label>
+                                        <select class="form-select form-select-sm" onchange="pilihPresetIkonPilar(this)">
+                                            <option value="">-- Rekomendasi Ikon --</option>
+                                            <option value="bi-book-half" {{ ($item['icon'] ?? '') === 'bi-book-half' ? 'selected' : '' }}>📖 Mushaf / Al-Qur'an (bi-book-half)</option>
+                                            <option value="bi-journal-bookmark-fill" {{ ($item['icon'] ?? '') === 'bi-journal-bookmark-fill' ? 'selected' : '' }}>📚 Kitab Kuning / Turats (bi-journal-bookmark-fill)</option>
+                                            <option value="bi-translate" {{ ($item['icon'] ?? '') === 'bi-translate' ? 'selected' : '' }}>🌐 Bahasa / Bilingual (bi-translate)</option>
+                                            <option value="bi-laptop" {{ ($item['icon'] ?? '') === 'bi-laptop' ? 'selected' : '' }}>💻 Komputer & Sains IT (bi-laptop)</option>
+                                            <option value="bi-mortarboard" {{ ($item['icon'] ?? '') === 'bi-mortarboard' ? 'selected' : '' }}>🎓 Akademik & Wisuda (bi-mortarboard)</option>
+                                            <option value="bi-star-fill" {{ ($item['icon'] ?? '') === 'bi-star-fill' ? 'selected' : '' }}>⭐ Prestasi Santri (bi-star-fill)</option>
+                                            <option value="bi-award" {{ ($item['icon'] ?? '') === 'bi-award' ? 'selected' : '' }}>🏅 Sertifikasi & Sanad (bi-award)</option>
+                                            <option value="bi-shield-check" {{ ($item['icon'] ?? '') === 'bi-shield-check' ? 'selected' : '' }}>🛡️ Akhlak & Disiplin (bi-shield-check)</option>
+                                            <option value="bi-heart-pulse-fill" {{ ($item['icon'] ?? '') === 'bi-heart-pulse-fill' ? 'selected' : '' }}>❤️ Karakter & Ruhani (bi-heart-pulse-fill)</option>
+                                            <option value="bi-lightbulb-fill" {{ ($item['icon'] ?? '') === 'bi-lightbulb-fill' ? 'selected' : '' }}>💡 Inovasi & Riset (bi-lightbulb-fill)</option>
+                                            <option value="bi-globe" {{ ($item['icon'] ?? '') === 'bi-globe' ? 'selected' : '' }}>🌍 Wawasan Global (bi-globe)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="pt-2 border-top">
+                                    <label class="form-label small fw-bold text-dark mb-1">Nama Kelas Ikon &amp; Preview</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="pilar-icon-preview rounded-3 d-flex align-items-center justify-content-center border" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                                            <i class="bi {{ $item['icon'] ?? 'bi-book-half' }} text-{{ $item['color'] ?? 'success' }}"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" name="pilar[{{ $idx }}][icon]" class="form-control form-control-sm pilar-icon-input" value="{{ old("pilar.{$idx}.icon", $item['icon'] ?? 'bi-book-half') }}" placeholder="bi-book-half" oninput="updatePilarPreview(this)" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-text" style="font-size: 0.7rem;">Class dari <a href="https://icons.getbootstrap.com/" target="_blank" class="text-decoration-underline text-success">Bootstrap Icons</a>.</div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -943,6 +1060,138 @@ function isiOtomatisSdm(selectEl) {
             inputJabatan.value = jabatan;
         }
     }
+}
+
+// -------------------------------------------------------------
+// Script Pengaturan 4 Pilar Keunggulan Kurikulum & Santri
+// -------------------------------------------------------------
+let pilarNextIndex = {{ count($pilarList) + 50 }};
+
+function updatePilarPreview(el) {
+    const card = el.closest('.pilar-card-item');
+    if (!card) return;
+    const iconInput = card.querySelector('.pilar-icon-input');
+    const colorSelect = card.querySelector('.pilar-color-select');
+    const previewIcon = card.querySelector('.pilar-icon-preview i');
+
+    if (!previewIcon) return;
+
+    let iconVal = iconInput ? iconInput.value.trim() : 'bi-star-fill';
+    if (!iconVal) iconVal = 'bi-star-fill';
+    if (!iconVal.startsWith('bi-')) {
+        iconVal = 'bi-' + iconVal;
+    }
+
+    const colorVal = colorSelect ? colorSelect.value : 'success';
+
+    previewIcon.className = `bi ${iconVal} text-${colorVal}`;
+}
+
+function pilihPresetIkonPilar(selectEl) {
+    if (!selectEl.value) return;
+    const card = selectEl.closest('.pilar-card-item');
+    if (!card) return;
+    const iconInput = card.querySelector('.pilar-icon-input');
+    if (iconInput) {
+        iconInput.value = selectEl.value;
+        updatePilarPreview(selectEl);
+    }
+}
+
+function tambahPilarCard() {
+    const container = document.getElementById('pilarContainer');
+    const newIdx = pilarNextIndex++;
+    const currentCount = container.querySelectorAll('.pilar-card-item').length + 1;
+
+    const col = document.createElement('div');
+    col.className = 'col-md-6 col-lg-3 pilar-card-item';
+    col.id = `pilarCard_${newIdx}`;
+    col.setAttribute('data-index', newIdx);
+    col.innerHTML = `
+        <div class="p-3 bg-white rounded-3 border border-2 border-success h-100 shadow-sm d-flex flex-column justify-content-between position-relative">
+            <div>
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="badge bg-success pilar-badge">Pilar #${currentCount} (Baru)</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 border-0" title="Hapus pilar ini" onclick="hapusPilarCard(this)">
+                        <i class="bi bi-trash"></i> Hapus
+                    </button>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-dark mb-1">Judul Pilar <span class="text-danger">*</span></label>
+                    <input type="text" name="pilar[${newIdx}][judul]" class="form-control form-control-sm pilar-judul" placeholder="Contoh: ${currentCount}. Karakter Kepemimpinan" required>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-dark mb-1">Deskripsi / Uraian</label>
+                    <textarea name="pilar[${newIdx}][deskripsi]" rows="4" class="form-control form-control-sm" placeholder="Penjelasan keunggulan pilar ini..."></textarea>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-dark mb-1">Warna Aksen</label>
+                    <select name="pilar[${newIdx}][color]" class="form-select form-select-sm pilar-color-select" onchange="updatePilarPreview(this)">
+                        <option value="success" selected>🟢 Hijau (Success)</option>
+                        <option value="warning">🟡 Kuning Emas (Warning)</option>
+                        <option value="primary">🔵 Biru (Primary)</option>
+                        <option value="danger">🔴 Merah (Danger)</option>
+                        <option value="info">🔷 Cyan (Info)</option>
+                        <option value="dark">⚫ Gelap (Dark)</option>
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-dark mb-1">Pilih Ikon Cepat</label>
+                    <select class="form-select form-select-sm" onchange="pilihPresetIkonPilar(this)">
+                        <option value="">-- Rekomendasi Ikon --</option>
+                        <option value="bi-book-half">📖 Mushaf / Al-Qur'an (bi-book-half)</option>
+                        <option value="bi-journal-bookmark-fill">📚 Kitab Kuning / Turats (bi-journal-bookmark-fill)</option>
+                        <option value="bi-translate">🌐 Bahasa / Bilingual (bi-translate)</option>
+                        <option value="bi-laptop">💻 Komputer & Sains IT (bi-laptop)</option>
+                        <option value="bi-mortarboard">🎓 Akademik & Wisuda (bi-mortarboard)</option>
+                        <option value="bi-star-fill">⭐ Prestasi Santri (bi-star-fill)</option>
+                        <option value="bi-award">🏅 Sertifikasi & Sanad (bi-award)</option>
+                        <option value="bi-shield-check">🛡️ Akhlak & Disiplin (bi-shield-check)</option>
+                        <option value="bi-heart-pulse-fill">❤️ Karakter & Ruhani (bi-heart-pulse-fill)</option>
+                        <option value="bi-lightbulb-fill">💡 Inovasi & Riset (bi-lightbulb-fill)</option>
+                        <option value="bi-globe">🌍 Wawasan Global (bi-globe)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pt-2 border-top">
+                <label class="form-label small fw-bold text-dark mb-1">Nama Kelas Ikon &amp; Preview</label>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pilar-icon-preview rounded-3 d-flex align-items-center justify-content-center border" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                        <i class="bi bi-star-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <input type="text" name="pilar[${newIdx}][icon]" class="form-control form-control-sm pilar-icon-input" value="bi-star-fill" placeholder="bi-star-fill" oninput="updatePilarPreview(this)" required>
+                    </div>
+                </div>
+                <div class="form-text" style="font-size: 0.7rem;">Class dari <a href="https://icons.getbootstrap.com/" target="_blank" class="text-decoration-underline text-success">Bootstrap Icons</a>.</div>
+            </div>
+        </div>
+    `;
+    container.appendChild(col);
+    renumberPilarBadges();
+    col.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hapusPilarCard(btn) {
+    if (confirm('Apakah Anda yakin ingin menghapus pilar keunggulan santri ini?')) {
+        const card = btn.closest('.pilar-card-item');
+        if (card) {
+            card.remove();
+            renumberPilarBadges();
+        }
+    }
+}
+
+function renumberPilarBadges() {
+    const badges = document.querySelectorAll('#pilarContainer .pilar-badge');
+    badges.forEach((b, idx) => {
+        b.innerText = `Pilar #${idx + 1}`;
+    });
 }
 </script>
 @endsection

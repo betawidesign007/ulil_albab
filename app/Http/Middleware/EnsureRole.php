@@ -2,27 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-class EnsureRole
+/**
+ * Class EnsureRole
+ *
+ * Dipertahankan untuk kompatibilitas ke belakang (backward compatibility).
+ * Logika utama didelegasikan ke RoleMiddleware.
+ */
+class EnsureRole extends RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
-    public function handle(Request $request, Closure $next, string ...$roles): Response
-    {
-        if (! $request->user()) {
-            return redirect()->route('login')->with('warning', 'Silakan login terlebih dahulu untuk mengakses halaman ini.');
-        }
-
-        if (empty($roles) || in_array($request->user()->role, $roles)) {
-            return $next($request);
-        }
-
-        abort(403, 'Akses Ditolak: Peran akun Anda ('.($request->user()->role_label ?? $request->user()->role).') tidak memiliki izin untuk mengakses halaman ini.');
-    }
+    // Mewarisi seluruh penanganan logika peran dari RoleMiddleware
 }

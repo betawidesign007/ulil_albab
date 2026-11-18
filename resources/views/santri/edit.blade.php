@@ -1,19 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-3">
+<div class="py-2 py-sm-3">
     <div class="row justify-content-center">
         <div class="col-md-9 col-lg-8">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-pesantren text-white p-4">
-                    <div class="d-flex justify-content-between align-items-center">
+                <div class="card-header bg-pesantren text-white p-3 p-sm-4">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
                         <div>
                             <h4 class="fw-bold mb-1 text-white">
                                 <i class="bi bi-pencil-square me-2"></i> Edit Data Santri
                             </h4>
                             <small class="text-white-50">Perbarui data: <strong>{{ $santri->nama_lengkap }}</strong> (NIS: {{ $santri->nis }})</small>
                         </div>
-                        <a href="{{ route('santri.index') }}" class="btn btn-outline-light btn-sm">
+                        <a href="{{ route('santri.index') }}" class="btn btn-outline-light btn-sm align-self-start align-self-sm-center">
                             &larr; Batal
                         </a>
                     </div>
@@ -73,11 +73,43 @@
                                     class="form-control">
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label class="form-label fw-semibold small">Tanggal Lahir <span class="text-danger">*</span></label>
-                                <input type="date" name="tanggal_lahir"
-                                    value="{{ old('tanggal_lahir', $santri->tanggal_lahir) }}" required
-                                    class="form-control">
+                                <input type="date" name="tanggal_lahir" id="santriTanggalLahir"
+                                    value="{{ old('tanggal_lahir', is_object($santri->tanggal_lahir) ? $santri->tanggal_lahir->format('Y-m-d') : $santri->tanggal_lahir) }}" required
+                                    class="form-control @error('tanggal_lahir') is-invalid @enderror">
+                                @error('tanggal_lahir')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label fw-semibold small">Usia (Tahun)</label>
+                                <input type="number" name="usia" id="santriUsia" min="1" max="100"
+                                    value="{{ old('usia', $santri->usia) }}"
+                                    class="form-control @error('usia') is-invalid @enderror" placeholder="Otomatis">
+                                @error('usia')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Orang Tua & No HP / Telepon -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Nama Orang Tua / Wali</label>
+                                <input type="text" name="nama_orang_tua" value="{{ old('nama_orang_tua', $santri->nama_orang_tua) }}"
+                                    class="form-control @error('nama_orang_tua') is-invalid @enderror" placeholder="Nama ayah/ibu/wali santri">
+                                @error('nama_orang_tua')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Nomor Telepon / WhatsApp (HP)</label>
+                                <input type="text" name="no_hp" value="{{ old('no_hp', $santri->no_hp) }}"
+                                    class="form-control @error('no_hp') is-invalid @enderror" placeholder="Contoh: 081234567890">
+                                @error('no_hp')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <!-- Dropdown Kamar / Asrama -->
@@ -138,4 +170,21 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('santriTanggalLahir')?.addEventListener('change', function() {
+        const tgl = new Date(this.value);
+        if (!isNaN(tgl.getTime())) {
+            const today = new Date();
+            let age = today.getFullYear() - tgl.getFullYear();
+            const m = today.getMonth() - tgl.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < tgl.getDate())) {
+                age--;
+            }
+            if (age >= 0) {
+                document.getElementById('santriUsia').value = age;
+            }
+        }
+    });
+</script>
 @endsection

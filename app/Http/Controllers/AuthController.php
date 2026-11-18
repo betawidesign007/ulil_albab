@@ -39,20 +39,22 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
-            // 3. (Opsional) Jika Anda ingin mengarahkan ke dashboard spesifik per role:
-            // if ($user->role === 'admin') {
-            //     return redirect()->intended(route('admin.dashboard'))
-            //         ->with('success', "Selamat datang kembali, {$user->name}! Anda login sebagai {$user->role_label}.");
-            // }
-
-            // Jika rute dashboard bersifat umum / dinamis menangani role di dalam controller-nya:
+            // Rute dashboard bersifat umum / dinamis menangani role di dalam controller-nya
             return redirect()->intended(route('dashboard'))
                 ->with('success', "Selamat datang kembali, {$user->name}! Anda login sebagai {$user->role_label}.");
         }
 
-        // 4. Jika gagal, kembalikan ke halaman login dengan pesan error
+        // 4. Jika gagal, periksa apakah email ada di database untuk deteksi salah akun
+        $userExists = User::where('email', $credentials['email'])->exists();
+
+        if (! $userExists) {
+            return back()->withErrors([
+                'email' => 'Akun dengan email tersebut tidak terdaftar di sistem SIMPONPES. Mohon periksa kembali jika Anda salah memasukkan akun.',
+            ])->onlyInput('email');
+        }
+
         return back()->withErrors([
-            'email' => 'Email atau password yang Anda masukkan tidak sesuai.',
+            'password' => 'Kata sandi yang Anda masukkan salah untuk akun ini. Silakan periksa kembali kata sandi Anda.',
         ])->onlyInput('email');
     }
 

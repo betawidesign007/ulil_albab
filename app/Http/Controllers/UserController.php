@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -28,9 +29,17 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role' => 'required|in:admin,pengajar,pemilik',
-            'no_hp' => 'nullable|string|max:20',
+            'no_hp' => 'nullable|string|max:30',
             'jabatan' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'usia' => 'nullable|integer|min:1|max:120',
+            'nama_orang_tua' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string',
         ]);
+
+        if (empty($validated['usia']) && ! empty($validated['tanggal_lahir'])) {
+            $validated['usia'] = Carbon::parse($validated['tanggal_lahir'])->age;
+        }
 
         $validated['password'] = Hash::make($validated['password']);
 
@@ -63,10 +72,18 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$user->id,
             'role' => 'required|in:admin,pengajar,pemilik',
-            'no_hp' => 'nullable|string|max:20',
+            'no_hp' => 'nullable|string|max:30',
             'jabatan' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'usia' => 'nullable|integer|min:1|max:120',
+            'nama_orang_tua' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string',
             'password' => 'nullable|min:6',
         ]);
+
+        if (empty($validated['usia']) && ! empty($validated['tanggal_lahir'])) {
+            $validated['usia'] = Carbon::parse($validated['tanggal_lahir'])->age;
+        }
 
         $updateData = [
             'name' => $validated['name'],
@@ -74,6 +91,10 @@ class UserController extends Controller
             'role' => $validated['role'],
             'no_hp' => $validated['no_hp'] ?? null,
             'jabatan' => $validated['jabatan'] ?? null,
+            'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
+            'usia' => $validated['usia'] ?? null,
+            'nama_orang_tua' => $validated['nama_orang_tua'] ?? null,
+            'alamat' => $validated['alamat'] ?? null,
         ];
 
         if (! empty($validated['password'])) {

@@ -95,7 +95,7 @@
             <small class="text-muted">Aksi: Detail, Edit Profil &amp; Hak Akses, Hapus</small>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 w-100" style="font-size: 0.83rem;">
+            <table class="table table-hover align-middle mb-0 w-100" style="font-size: 0.83rem; min-width: 760px;">
                 <thead class="table-light text-secondary" style="font-size: 0.78rem;">
                     <tr>
                         <th class="ps-3 py-2 text-center" style="width: 45px;">No</th>
@@ -202,6 +202,21 @@
                                                 <strong class="text-dark">{{ $u->no_hp ?? '-' }}</strong>
                                             </div>
                                             <div class="list-group-item d-flex justify-content-between py-2">
+                                                <span class="text-muted">Tanggal Lahir &amp; Usia</span>
+                                                <span class="text-dark">
+                                                    {{ $u->tanggal_lahir ? $u->tanggal_lahir->translatedFormat('d F Y') : '-' }}
+                                                    @if($u->usia) ({{ $u->usia }} Tahun) @endif
+                                                </span>
+                                            </div>
+                                            <div class="list-group-item d-flex justify-content-between py-2">
+                                                <span class="text-muted">Nama Orang Tua</span>
+                                                <span class="text-dark">{{ $u->nama_orang_tua ?? '-' }}</span>
+                                            </div>
+                                            <div class="list-group-item d-flex justify-content-between py-2">
+                                                <span class="text-muted">Alamat Domisili</span>
+                                                <span class="text-dark text-end" style="max-width: 60%;">{{ $u->alamat ?? '-' }}</span>
+                                            </div>
+                                            <div class="list-group-item d-flex justify-content-between py-2">
                                                 <span class="text-muted">Terdaftar Sejak</span>
                                                 <span class="text-dark">{{ $u->created_at?->translatedFormat('d F Y, H:i') ?? '-' }}</span>
                                             </div>
@@ -244,13 +259,13 @@
                                             <div class="mb-2">
                                                 <label class="form-label fw-bold small text-dark mb-1">Peran / Hak Akses <span class="text-danger">*</span></label>
                                                 <select name="role" required class="form-select form-select-sm">
-                                                    <option value="pengajar" {{ old('role', $u->role) === 'pengajar' ? 'selected' : '' }}>
+                                                    <option value="pengajar" {{ old('role', $u->role_value ?? ($u->role instanceof \BackedEnum ? $u->role->value : $u->role)) === 'pengajar' ? 'selected' : '' }}>
                                                         Dewan Pengajar / Asatidz (Jadwal Mengajar, Jurnal &amp; Acuan Kerja)
                                                     </option>
-                                                    <option value="pemilik" {{ old('role', $u->role) === 'pemilik' ? 'selected' : '' }}>
+                                                    <option value="pemilik" {{ old('role', $u->role_value ?? ($u->role instanceof \BackedEnum ? $u->role->value : $u->role)) === 'pemilik' ? 'selected' : '' }}>
                                                         Pemilik / Mudir Yayasan (Supervisi &amp; Monitoring Eksekutif)
                                                     </option>
-                                                    <option value="admin" {{ old('role', $u->role) === 'admin' ? 'selected' : '' }}>
+                                                    <option value="admin" {{ old('role', $u->role_value ?? ($u->role instanceof \BackedEnum ? $u->role->value : $u->role)) === 'admin' ? 'selected' : '' }}>
                                                         Administrator (Akses Penuh Master Data, Jadwal &amp; Pengguna)
                                                     </option>
                                                 </select>
@@ -265,6 +280,27 @@
                                                     <label class="form-label fw-bold small text-dark mb-1">Jabatan / Bagian</label>
                                                     <input type="text" name="jabatan" class="form-control form-control-sm" value="{{ old('jabatan', $u->jabatan) }}" placeholder="Guru Tahfidz">
                                                 </div>
+                                            </div>
+
+                                            <div class="row g-2 mb-2">
+                                                <div class="col-md-7">
+                                                    <label class="form-label fw-bold small text-dark mb-1">Tanggal Lahir</label>
+                                                    <input type="date" name="tanggal_lahir" class="form-control form-control-sm" value="{{ old('tanggal_lahir', is_object($u->tanggal_lahir) ? $u->tanggal_lahir->format('Y-m-d') : $u->tanggal_lahir) }}">
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label class="form-label fw-bold small text-dark mb-1">Usia (Tahun)</label>
+                                                    <input type="number" name="usia" min="1" max="100" class="form-control form-control-sm" value="{{ old('usia', $u->usia) }}" placeholder="Otomatis">
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label fw-bold small text-dark mb-1">Nama Orang Tua</label>
+                                                <input type="text" name="nama_orang_tua" class="form-control form-control-sm" value="{{ old('nama_orang_tua', $u->nama_orang_tua) }}" placeholder="Nama ayah/ibu">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label fw-bold small text-dark mb-1">Alamat Domisili</label>
+                                                <textarea name="alamat" rows="2" class="form-control form-control-sm" placeholder="Alamat lengkap domisili">{{ old('alamat', $u->alamat) }}</textarea>
                                             </div>
 
                                             <div class="mb-2 pt-2 border-top">
@@ -388,6 +424,27 @@
                             <input type="text" name="jabatan" class="form-control form-control-sm" placeholder="Guru Tahfidz" value="{{ old('jabatan') }}">
                         </div>
                     </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold small text-dark mb-1">Tanggal Lahir</label>
+                            <input type="date" name="tanggal_lahir" class="form-control form-control-sm" value="{{ old('tanggal_lahir') }}">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold small text-dark mb-1">Usia (Tahun)</label>
+                            <input type="number" name="usia" min="1" max="100" class="form-control form-control-sm" placeholder="Otomatis" value="{{ old('usia') }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold small text-dark mb-1">Nama Orang Tua</label>
+                        <input type="text" name="nama_orang_tua" class="form-control form-control-sm" placeholder="Nama ayah/ibu" value="{{ old('nama_orang_tua') }}">
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold small text-dark mb-1">Alamat Domisili</label>
+                        <textarea name="alamat" rows="2" class="form-control form-control-sm" placeholder="Alamat lengkap domisili">{{ old('alamat') }}</textarea>
+                    </div>
                 </div>
                 <div class="modal-footer bg-light py-2 px-3">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
@@ -459,6 +516,29 @@
             });
             modal.addEventListener('shown.bs.modal', function () {
                 setTimeout(clearEditPassword, 100);
+            });
+        });
+
+        // Hitung usia otomatis ketika tanggal lahir dipilih
+        document.querySelectorAll('input[name="tanggal_lahir"]').forEach(function (input) {
+            input.addEventListener('change', function () {
+                const form = this.closest('form');
+                if (!form) return;
+                const usiaInput = form.querySelector('input[name="usia"]');
+                if (!usiaInput) return;
+
+                const tgl = new Date(this.value);
+                if (!isNaN(tgl.getTime())) {
+                    const today = new Date();
+                    let age = today.getFullYear() - tgl.getFullYear();
+                    const m = today.getMonth() - tgl.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < tgl.getDate())) {
+                        age--;
+                    }
+                    if (age >= 0) {
+                        usiaInput.value = age;
+                    }
+                }
             });
         });
     });
